@@ -1,0 +1,20 @@
+{
+  "title": "Static Website Hosting",
+  "subtitle": "CloudFront + S3",
+  "theme": "light",
+  "size": "simple",
+  "nodes": [
+    {"id": "users", "service": "users", "label": "Users", "x": 0, "y": 0},
+    {"id": "cf", "service": "cloudfront", "label": "Amazon\nCloudFront", "x": 1, "y": 0, "container": "cloud"},
+    {"id": "s3", "service": "s3", "label": "Amazon S3", "sublabel": "Static Website", "x": 2, "y": 0, "container": "cloud"},
+    {"id": "route53", "service": "route53", "label": "Amazon\nRoute 53", "x": 1, "y": 1, "container": "cloud"}
+  ],
+  "connections": [
+    {"source": "users", "target": "cf", "label": "HTTPS", "style": "solid", "step_number": 1},
+    {"source": "cf", "target": "s3", "label": "Origin", "style": "solid", "step_number": 2},
+    {"source": "users", "target": "route53", "label": "DNS", "style": "dashed"}
+  ],
+  "containers": [
+    {"id": "cloud", "type": "aws-cloud", "label": "AWS Cloud", "children": ["cf", "s3", "route53"]}
+  ]
+}

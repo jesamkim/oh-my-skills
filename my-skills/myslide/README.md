@@ -1,0 +1,147 @@
+# MySlide - AWS-Themed Presentation Generator
+
+Create professional PowerPoint presentations with two AWS design themes:
+**Dark** (reInvent 2023/2025) and **Light** (L100/field enablement).
+SVG architecture diagrams, cross-skill integration, and conversational slide editing.
+
+## Features
+
+- **Dual Theme Support**: Dark (reInvent gradient) and Light (white + gradient blobs)
+- **25+ Slide Layouts**: Title, Agenda, Section Header, Content Card, Two/Three Column,
+  Key Points Grid, Do's vs Don'ts, CTA, Customer Case Study, Process Flow, Architecture,
+  Comparison Table, Screenshot+Text, Summary Grid, Multi-Card Grid, Thank You, and more
+- **SVG Diagrams**: Auto-generate architecture and flow diagrams with 248 AWS service icons
+- **Cross-Skill Integration**: `svg-diagram` for diagrams, `moai-domain-uiux` for design guidance
+- **Image Generation**: `sd35l` / `nova2-omni` for hero images and conceptual illustrations
+- **Animations**: OOXML-based animation system with JSON spec and Python post-processor
+- **Conversational Editing**: Modify specific slides by number via natural language
+- **Parallel Generation**: Sub-agent strategy (8+ slides) and team-up strategy (15+ slides)
+- **Two-Phase QA**: Programmatic validation + visual inspection (kiro or subagent)
+
+## Quick Start
+
+```bash
+# Trigger with:
+/myslide
+# or natural language: "AWS 프레젠테이션 만들어줘", "create AWS slides"
+# Light theme: "L100 교육 자료 만들어줘", "training deck", "light theme"
+```
+
+## Theme Selection
+
+| Context | Theme | Trigger |
+|---------|-------|---------|
+| reInvent, Summit keynotes | **Dark** | Default |
+| L100/L200 field enablement | **Light** | "L100", "training deck", "밝은 테마" |
+| Customer-facing training | **Light** | "customer-facing", "교육 자료" |
+| Internal workshops | **Light** | "workshop", "white background" |
+| Technical deep-dives | Either | User preference |
+
+## Default Presenter
+
+| Field | Example |
+|-------|---------|
+| Korean Name | 홍길동 |
+| English Name | Gildong Hong |
+| Title | Solutions Architect |
+| Company | Your Company |
+| Email | you@example.com |
+
+> Update these defaults in your own fork, or provide them when invoking the skill.
+
+## Theme Colors
+
+### Dark Theme (reInvent 2023)
+
+| Role | Hex | Usage |
+|------|-----|-------|
+| Background | `#09051B` | Deep purple-black base |
+| Orange | `#F66C02` | Primary emphasis, key terms |
+| Magenta | `#C91F8A` | Secondary emphasis, borders |
+| Purple | `#5600C2` | Gradient accents |
+| Dark Navy | `#161E2D` | Card/container backgrounds |
+| White | `#FFFFFF` | Body text, headings |
+
+### Light Theme (L100/Field Enablement)
+
+| Role | Hex | Usage |
+|------|-----|-------|
+| Background | `#FFFFFF` | White base |
+| Sky Blue | `#4FC3F7` | Table headers, bullets, links |
+| Purple | `#6B46C1` | Architecture labels, step badges |
+| Coral | `#C96842` | Key stat emphasis, CTA highlights |
+| AWS Orange | `#FF9900` | Internal badge, numbered badges |
+| Card Fill | `#F5F0EB` | Cream/beige card backgrounds |
+
+## Directory Structure
+
+```
+myslide/
+├── SKILL.md                          # Main skill instructions (dual theme)
+├── README.md                         # This file
+├── icons/                            # 248 official AWS service icons (SVG)
+├── references/
+│   ├── aws-theme.md                  # Dark theme: colors, fonts, JS constants
+│   ├── light-theme.md                # Light theme: colors, patterns, JS constants
+│   ├── slide-patterns.md             # 19+ layout patterns with PptxGenJS code
+│   ├── pptxgenjs.md                  # PptxGenJS creation guide
+│   ├── editing.md                    # Existing PPTX editing workflow
+│   ├── animations.md                 # OOXML animation primitives
+│   └── image-generation-integration.md  # sd35l/nova2-omni integration
+└── scripts/
+    ├── create_aws_slide.py           # Background/SVG/logo asset generator
+    ├── apply_animations.py           # Inject OOXML animations from JSON
+    ├── qa_validate.py                # Programmatic QA (bounds, fonts, shapes)
+    ├── thumbnail.py                  # Thumbnail grid for visual overview
+    ├── clean.py                      # Clean PPTX XML
+    ├── add_slide.py                  # Add slides to existing PPTX
+    └── office/
+        ├── soffice.py                # PPTX -> PDF conversion (LibreOffice)
+        ├── unpack.py                 # Unpack PPTX to XML
+        ├── pack.py                   # Repack XML to PPTX
+        ├── helpers/                  # merge_runs, simplify_redlines
+        ├── validators/               # PPTX/DOCX schema validators
+        └── schemas/                  # ISO/IEC 29500 XSD schemas
+```
+
+## Dependencies
+
+| Package | Type | Purpose |
+|---------|------|---------|
+| `pptxgenjs` | npm | PPTX creation from scratch |
+| `sharp` | npm | SVG to PNG conversion (gradient cards, blobs) |
+| `Pillow` | pip | Background gradient image generation |
+| `python-pptx` | pip | PPTX reading, editing, and animation injection |
+| `cairosvg` | pip | SVG to PNG conversion |
+| `markitdown[pptx]` | pip | Text extraction from PPTX |
+| `pdftoppm` (poppler) | system | PDF to slide images (QA) |
+| `soffice` (LibreOffice) | system | PPTX to PDF conversion |
+
+## Asset Generation
+
+```bash
+# Generate all assets at once
+python3 scripts/create_aws_slide.py full-setup --output-dir /tmp/myslide-assets/
+
+# Individual commands
+python3 scripts/create_aws_slide.py backgrounds --output-dir /tmp/myslide-assets/
+python3 scripts/create_aws_slide.py svg-diagram --elements "VPC,Lambda,S3,Bedrock" --output /tmp/arch.png
+python3 scripts/create_aws_slide.py aws-logo --output /tmp/aws-logo.png
+```
+
+## QA Workflow
+
+```bash
+# Phase 1: Programmatic (fast, catches hidden issues)
+python3 scripts/qa_validate.py output.pptx
+
+# Phase 2: Visual (delegate to kiro or subagent)
+# Convert to images, then inspect alignment, colors, readability
+```
+
+## Version
+
+- **v1.1.0** - Add Light theme (L100/field enablement), cross-skill integration, animations
+- **v1.0.0** - Initial release with AWS reInvent 2023 dark design system
+- Author: Jesam Kim
+- License: MIT

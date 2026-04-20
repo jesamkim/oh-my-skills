@@ -1,0 +1,94 @@
+{
+  "name": "oh-my-skills",
+  "owner": {
+    "name": "jesamkim",
+    "email": "jesamkim@gmail.com"
+  },
+  "metadata": {
+    "description": "Open collection of Claude Code skills: AWS architecture diagrams, AWS-themed presentations (myslide), SVG diagram generation, academic paper search, YouTube transcript extraction, AgentCore Browser automation via CDP, Bedrock Computer Use, Kiro CLI delegation, and professional README generation.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "paper-finder",
+      "description": "Academic paper search and discovery across Semantic Scholar, OpenAlex, and ArXiv APIs. Supports keyword search, ArXiv ID/DOI lookup, BibTeX export, and markdown output",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/paper-finder"
+      ]
+    },
+    {
+      "name": "svg-diagram",
+      "description": "Generate pixel-perfect SVG diagrams, banners, and architecture visuals with anti-overlap rules. Supports hero banners, architecture diagrams, flowcharts, pipelines, and dark-mode compatible graphics",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/svg-diagram"
+      ]
+    },
+    {
+      "name": "aws-diagram",
+      "description": "Generate professional AWS architecture diagrams with official service icons, guaranteed orthogonal (right-angle) arrow routing, VPC/AZ/Subnet container nesting, and dual SVG/PPTX output. Python engine handles layout and routing deterministically from JSON definitions. Follows AWS Architecture Icon Deck guidelines. Trigger on: AWS diagram, architecture diagram, aws-diagram, draw architecture, 아키텍처 다이어그램",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/aws-diagram"
+      ]
+    },
+    {
+      "name": "myslide",
+      "description": "Create professional AWS-themed PPTX presentations with dark gradient backgrounds, SVG architecture diagrams, and conversational slide editing. Uses AWS reInvent design system (Amazon Ember fonts, orange/magenta/purple palette, content card patterns). Supports creating from scratch, editing specific slides by number, and team-based parallel generation for large decks. Trigger on: AWS presentation, AWS slides, myslide, AWS themed deck, make slides, create presentation",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/myslide"
+      ]
+    },
+    {
+      "name": "youtube-script",
+      "description": "YouTube transcript extractor. Extracts captions and subtitles from YouTube videos and saves as text files. Supports auto-generated and manual captions in multiple languages",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/youtube-script"
+      ]
+    },
+    {
+      "name": "computer-use",
+      "description": "Bedrock Computer Use GUI automation agent using Converse API. Captures screenshots, sends to Claude model, executes mouse/keyboard actions via pyautogui in an agentic loop. Supports click, type, scroll, drag, key press, and bash commands",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/computer-use"
+      ]
+    },
+    {
+      "name": "kiro",
+      "description": "Delegate tasks to Kiro CLI when context window is insufficient or independent AI analysis is needed. Runs Kiro in non-interactive mode with a prompt, captures clean results. For large document analysis, code QA, summarization, or second-opinion tasks. Triggers: kiro, delegate to kiro, ask kiro, context 부족, 키로",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/kiro"
+      ]
+    },
+    {
+      "name": "readme",
+      "description": "Create beautiful, professional README.md files with logos, badges, screenshots, GIFs, architecture diagrams, and polished formatting. Covers open-source libraries, CLI tools, web apps, APIs, internal projects, ML projects, and monorepos. Based on 100+ curated best practices from the awesome-readme community",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/readme"
+      ]
+    },
+    {
+      "name": "agentcore-browser",
+      "description": "AWS Bedrock AgentCore Browser automation via CDP over WebSocket. Python-native cloud browser control without local Chrome. Use as fallback/complement to agent-browser when CLI is unavailable, on headless servers, for Python async integration, or VPC-internal site access. Triggers on: AgentCore browser, AWS headless browser, managed browser, CDP on Bedrock, agentcore-browser",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/agentcore-browser"
+      ]
+    }
+  ]
+}

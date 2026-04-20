@@ -1,0 +1,32 @@
+{
+  "title": "Data Analytics Pipeline",
+  "subtitle": "Streaming + Batch processing on AWS",
+  "theme": "light",
+  "size": "wide",
+  "nodes": [
+    {"id": "source", "service": "users", "label": "Data Sources", "x": 0, "y": 1},
+    {"id": "kinesis", "service": "kinesis", "label": "Amazon\nKinesis", "x": 1, "y": 0, "container": "cloud"},
+    {"id": "s3-raw", "service": "s3", "label": "Amazon S3", "sublabel": "Raw Data", "x": 1, "y": 2, "container": "cloud"},
+    {"id": "lambda", "service": "lambda", "label": "AWS Lambda", "sublabel": "Transform", "x": 2, "y": 0, "container": "cloud"},
+    {"id": "glue", "service": "glue", "label": "AWS Glue", "sublabel": "ETL Jobs", "x": 2, "y": 2, "container": "cloud"},
+    {"id": "s3-processed", "service": "s3", "label": "Amazon S3", "sublabel": "Processed", "x": 3, "y": 1, "container": "cloud"},
+    {"id": "redshift", "service": "redshift", "label": "Amazon\nRedshift", "x": 4, "y": 0, "container": "cloud"},
+    {"id": "athena", "service": "athena", "label": "Amazon\nAthena", "x": 4, "y": 2, "container": "cloud"},
+    {"id": "quicksight", "service": "quicksight", "label": "Amazon\nQuickSight", "x": 5, "y": 1, "container": "cloud"}
+  ],
+  "connections": [
+    {"source": "source", "target": "kinesis", "label": "Stream", "style": "solid", "step_number": 1},
+    {"source": "source", "target": "s3-raw", "label": "Batch", "style": "dashed", "step_number": 2},
+    {"source": "kinesis", "target": "lambda", "style": "solid", "step_number": 3},
+    {"source": "s3-raw", "target": "glue", "style": "solid", "step_number": 4},
+    {"source": "lambda", "target": "s3-processed", "style": "solid", "step_number": 5},
+    {"source": "glue", "target": "s3-processed", "style": "solid"},
+    {"source": "s3-processed", "target": "redshift", "label": "Load", "style": "solid", "step_number": 6},
+    {"source": "s3-processed", "target": "athena", "label": "Query", "style": "dashed"},
+    {"source": "redshift", "target": "quicksight", "style": "solid", "step_number": 7},
+    {"source": "athena", "target": "quicksight", "style": "dashed"}
+  ],
+  "containers": [
+    {"id": "cloud", "type": "aws-cloud", "label": "AWS Cloud", "children": ["kinesis", "s3-raw", "lambda", "glue", "s3-processed", "redshift", "athena", "quicksight"]}
+  ]
+}

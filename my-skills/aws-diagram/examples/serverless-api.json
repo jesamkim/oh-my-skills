@@ -1,0 +1,28 @@
+{
+  "title": "Serverless API Architecture",
+  "subtitle": "API Gateway + Lambda + DynamoDB",
+  "theme": "light",
+  "size": "standard",
+  "nodes": [
+    {"id": "users", "service": "users", "label": "Users", "x": 0, "y": 1},
+    {"id": "cognito", "service": "cognito", "label": "Amazon Cognito", "x": 1, "y": 0, "container": "cloud"},
+    {"id": "apigw", "service": "api-gateway", "label": "Amazon API\nGateway", "x": 1, "y": 1, "container": "cloud"},
+    {"id": "lambda-auth", "service": "lambda", "label": "AWS Lambda", "sublabel": "Authorizer", "x": 2, "y": 0, "container": "cloud"},
+    {"id": "lambda-api", "service": "lambda", "label": "AWS Lambda", "sublabel": "API Handler", "x": 2, "y": 1, "container": "cloud"},
+    {"id": "dynamodb", "service": "dynamodb", "label": "Amazon\nDynamoDB", "x": 3, "y": 1, "container": "cloud"},
+    {"id": "s3", "service": "s3", "label": "Amazon S3", "sublabel": "Storage", "x": 3, "y": 2, "container": "cloud"},
+    {"id": "cloudwatch", "service": "cloudwatch", "label": "Amazon\nCloudWatch", "x": 2, "y": 2, "container": "cloud"}
+  ],
+  "connections": [
+    {"source": "users", "target": "apigw", "label": "HTTPS", "style": "solid", "step_number": 1},
+    {"source": "apigw", "target": "cognito", "label": "Auth", "style": "solid", "step_number": 2},
+    {"source": "cognito", "target": "lambda-auth", "style": "solid", "step_number": 3},
+    {"source": "apigw", "target": "lambda-api", "style": "solid", "step_number": 4},
+    {"source": "lambda-api", "target": "dynamodb", "label": "Read/Write", "style": "solid", "step_number": 5},
+    {"source": "lambda-api", "target": "s3", "label": "Upload", "style": "dashed"},
+    {"source": "lambda-api", "target": "cloudwatch", "label": "Logs", "style": "dashed"}
+  ],
+  "containers": [
+    {"id": "cloud", "type": "aws-cloud", "label": "AWS Cloud", "children": ["cognito", "apigw", "lambda-auth", "lambda-api", "dynamodb", "s3", "cloudwatch"]}
+  ]
+}

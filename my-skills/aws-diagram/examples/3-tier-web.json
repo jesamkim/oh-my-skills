@@ -1,0 +1,37 @@
+{
+  "title": "3-Tier Web Application",
+  "subtitle": "Classic web architecture with ALB, EC2, and RDS",
+  "theme": "light",
+  "size": "standard",
+  "nodes": [
+    {"id": "users", "service": "users", "label": "Users", "x": 0, "y": 1},
+    {"id": "cf", "service": "cloudfront", "label": "Amazon CloudFront", "x": 1, "y": 1, "container": "cloud"},
+    {"id": "alb", "service": "elb", "label": "Application\nLoad Balancer", "x": 2, "y": 1, "container": "pub-sub"},
+    {"id": "ec2-1", "service": "ec2", "label": "Amazon EC2", "sublabel": "Web Server", "x": 3, "y": 0, "container": "priv-sub"},
+    {"id": "ec2-2", "service": "ec2", "label": "Amazon EC2", "sublabel": "Web Server", "x": 3, "y": 2, "container": "priv-sub"},
+    {"id": "rds-primary", "service": "rds", "label": "Amazon RDS", "sublabel": "Primary", "x": 4, "y": 0, "container": "db-sub"},
+    {"id": "rds-standby", "service": "rds", "label": "Amazon RDS", "sublabel": "Standby", "x": 4, "y": 2, "container": "db-sub2"},
+    {"id": "s3", "service": "s3", "label": "Amazon S3", "sublabel": "Static Assets", "x": 1, "y": 3, "container": "cloud"}
+  ],
+  "connections": [
+    {"source": "users", "target": "cf", "label": "HTTPS", "style": "solid", "step_number": 1},
+    {"source": "cf", "target": "alb", "style": "solid", "step_number": 2},
+    {"source": "alb", "target": "ec2-1", "style": "solid", "step_number": 3},
+    {"source": "alb", "target": "ec2-2", "style": "solid"},
+    {"source": "ec2-1", "target": "rds-primary", "label": "SQL", "style": "solid", "step_number": 4},
+    {"source": "ec2-2", "target": "rds-standby", "label": "SQL", "style": "solid"},
+    {"source": "rds-primary", "target": "rds-standby", "label": "Sync", "style": "dashed"},
+    {"source": "cf", "target": "s3", "label": "Static", "style": "solid"}
+  ],
+  "containers": [
+    {"id": "cloud", "type": "aws-cloud", "label": "AWS Cloud", "parent": null, "children": ["region"]},
+    {"id": "region", "type": "region", "label": "ap-northeast-2", "parent": "cloud", "children": ["vpc"]},
+    {"id": "vpc", "type": "vpc", "label": "VPC (10.0.0.0/16)", "parent": "region", "children": ["az1", "az2"]},
+    {"id": "az1", "type": "az", "label": "Availability Zone 1", "parent": "vpc", "children": ["pub-sub", "priv-sub", "db-sub"]},
+    {"id": "az2", "type": "az", "label": "Availability Zone 2", "parent": "vpc", "children": ["db-sub2"]},
+    {"id": "pub-sub", "type": "public-subnet", "label": "Public subnet", "parent": "az1", "children": ["alb"]},
+    {"id": "priv-sub", "type": "private-subnet", "label": "Private subnet", "parent": "az1", "children": ["ec2-1", "ec2-2"]},
+    {"id": "db-sub", "type": "private-subnet", "label": "DB subnet", "parent": "az1", "children": ["rds-primary"]},
+    {"id": "db-sub2", "type": "private-subnet", "label": "DB subnet", "parent": "az2", "children": ["rds-standby"]}
+  ]
+}

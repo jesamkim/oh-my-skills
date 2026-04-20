@@ -1,0 +1,14 @@
+{
+  "name": "aws-diagram",
+  "description": "Generate professional AWS architecture diagrams with official service icons, orthogonal arrow routing, and VPC/AZ/Subnet container nesting. Outputs SVG, PNG, and PPTX.",
+  "version": "2.0.0",
+  "author": "jesamkim",
+  "license": "MIT License",
+  "skills": [
+    {
+      "name": "aws-diagram",
+      "description": "AWS architecture diagram generator with Python engine for guaranteed orthogonal arrows, 85 inline icons, container nesting, and dual SVG/PPTX output",
+      "path": "SKILL.md"
+    }
+  ]
+}
