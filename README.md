@@ -18,16 +18,99 @@ AWS 중심 워크플로, 시각 자료 생성, 에이전트 자동화를 위한 
 
 > `my-skills/scripts/`에는 위 스킬들이 공유하는 헬퍼 스크립트가 있습니다 (예: AWS 아이콘 추출).
 
-## 설치
+## 시작하기
 
-이 저장소는 Claude Code 플러그인 마켓플레이스 구조를 따릅니다.
+이 저장소는 Claude Code 플러그인 마켓플레이스 구조를 따릅니다. 아래 절차대로 등록하면 `/plugin` 명령으로 스킬을 설치할 수 있습니다.
 
+> Claude Code가 처음이라면 [Claude Code Quickstart Guide](https://docs.claude.com/en/docs/claude-code/quickstart)를 먼저 확인하세요.
+
+### 1단계: Claude Code 설치
+
+**macOS:**
 ```bash
-# Claude Code가 읽을 수 있는 위치에 클론합니다
-git clone https://github.com/jesamkim/oh-my-skills.git
+curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-이후 Claude Code에 로컬 플러그인 소스로 등록하세요. `my-skills/` 아래 각 스킬에는 트리거 문구와 사용법이 담긴 `SKILL.md`가 들어 있습니다.
+**Windows (PowerShell):**
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+### 2단계: 저장소 클론
+
+```bash
+git clone https://github.com/jesamkim/oh-my-skills.git
+cd oh-my-skills
+```
+
+### 3단계: 마켓플레이스 등록
+
+`~/.claude/settings.json`에 다음을 추가하세요. `path` 값은 방금 클론한 절대 경로로 바꿔주세요.
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "oh-my-skills": {
+      "source": {
+        "source": "directory",
+        "path": "/absolute/path/to/oh-my-skills"
+      }
+    }
+  }
+}
+```
+
+> 예시: `"path": "/Users/jesamkim/workspace/oh-my-skills"` 또는 `"/Workshop/oh-my-skills"`
+
+### 4단계: 스킬 설치
+
+**방법 A: CLI로 바로 설치 (빠름)**
+
+원하는 스킬만 설치:
+```bash
+/plugin install aws-diagram@oh-my-skills
+/plugin install myslide@oh-my-skills
+/plugin install svg-diagram@oh-my-skills
+/plugin install readme@oh-my-skills
+/plugin install paper-finder@oh-my-skills
+/plugin install youtube-script@oh-my-skills
+/plugin install agentcore-browser@oh-my-skills
+/plugin install computer-use@oh-my-skills
+/plugin install kiro@oh-my-skills
+```
+
+한 번에 모두 설치:
+```bash
+/plugin install aws-diagram@oh-my-skills myslide@oh-my-skills svg-diagram@oh-my-skills readme@oh-my-skills paper-finder@oh-my-skills youtube-script@oh-my-skills agentcore-browser@oh-my-skills computer-use@oh-my-skills kiro@oh-my-skills
+```
+
+**방법 B: 대화형 설치**
+
+1. Claude Code에서 `/plugin` 실행
+2. **Browse and install plugins** 선택
+3. **oh-my-skills** 마켓플레이스 선택
+4. 설치할 스킬 체크
+5. **Install now** 클릭
+
+설치가 끝나면 Claude가 작업 내용에 맞춰 자동으로 해당 스킬을 호출합니다.
+
+### 스킬 관리
+
+```bash
+# 설치된 플러그인 확인 (UI)
+/plugin → Manage Plugins
+
+# 최신 버전으로 업데이트
+/plugin update aws-diagram@oh-my-skills
+/plugin update myslide@oh-my-skills
+
+# 활성화 / 비활성화
+/plugin enable aws-diagram@oh-my-skills
+/plugin disable aws-diagram@oh-my-skills
+
+# 제거
+/plugin uninstall aws-diagram@oh-my-skills
+```
 
 ## 구조
 
