@@ -45,7 +45,23 @@ cd oh-my-skills
 
 ### 3단계: 마켓플레이스 등록
 
-`~/.claude/settings.json`에 다음을 추가하세요. `path` 값은 방금 클론한 절대 경로로 바꿔주세요.
+**방법 A: Claude Code 안에서 `/plugin`으로 등록 (권장)**
+
+Claude Code 세션에서 아래 명령을 실행하세요. 클론한 저장소의 절대 경로를 인자로 넘깁니다.
+
+```
+/plugin marketplace add /absolute/path/to/oh-my-skills
+```
+
+- 예: `/plugin marketplace add /Users/jesamkim/workspace/oh-my-skills`
+- GitHub에서 바로 등록도 가능합니다:
+  ```
+  /plugin marketplace add jesamkim/oh-my-skills
+  ```
+
+등록이 되면 `/plugin marketplace list`에 `oh-my-skills`가 보입니다.
+
+**방법 B: `~/.claude/settings.json` 직접 편집**
 
 ```json
 {
