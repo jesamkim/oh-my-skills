@@ -35,7 +35,7 @@ handle tasks that would otherwise exceed your remaining context budget.
 ```yaml
 Binary: /Applications/Kiro CLI.app/Contents/MacOS/kiro-cli
 Mode: chat --no-interactive
-Default Model: claude-opus-4.6-1m
+Default Model: claude-opus-4.7
 Default Agent: (kiro's built-in default agent)
 ```
 
@@ -75,7 +75,7 @@ If the wrapper script is not suitable, call kiro-cli directly:
 ```bash
 "/Applications/Kiro CLI.app/Contents/MacOS/kiro-cli" chat \
   --no-interactive \
-  --model claude-opus-4.6-1m \
+  --model claude-opus-4.7 \
   "Your prompt here"
 ```
 

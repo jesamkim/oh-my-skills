@@ -5,7 +5,7 @@
 set -euo pipefail
 
 KIRO_BIN="/Applications/Kiro CLI.app/Contents/MacOS/kiro-cli"
-DEFAULT_MODEL="claude-opus-4.6-1m"
+DEFAULT_MODEL="claude-opus-4.7"
 DEFAULT_TIMEOUT=300
 TRUST_ALL=false
 MODEL=""
@@ -18,7 +18,7 @@ Usage: run_kiro.sh [OPTIONS] "prompt"
 Options:
   --timeout SEC    Max seconds to wait (default: 300)
   --trust-all      Auto-approve all tool usage (-a flag)
-  --model MODEL    Override default model (default: claude-opus-4.6-1m)
+  --model MODEL    Override default model (default: claude-opus-4.7)
   --help           Show this help
 
 Examples:

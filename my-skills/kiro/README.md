@@ -9,7 +9,7 @@ Delegate tasks to [Kiro CLI](https://kiro.dev) when Claude Code's context window
 | **Version** | 1.0.0 |
 | **Author** | Jesam Kim |
 | **License** | MIT |
-| **Default Model** | claude-opus-4.6-1m |
+| **Default Model** | claude-opus-4.7 |
 
 ## What It Does
 
@@ -54,7 +54,7 @@ When installed as a Claude Code skill, simply describe your task and mention "ki
 ## How It Works
 
 1. Claude Code constructs a prompt with all necessary context (file paths, instructions)
-2. The wrapper script calls `kiro-cli chat --no-interactive --model claude-opus-4.6-1m`
+2. The wrapper script calls `kiro-cli chat --no-interactive --model claude-opus-4.7`
 3. ANSI escape codes are stripped from the output
 4. Clean text result is returned to Claude Code
 
