@@ -5,7 +5,7 @@ description: |
   dark (reInvent 2023/2025 with gradient backgrounds) and light (L100/field
   enablement with white backgrounds and soft gradient accents). Uses AWS brand
   colors, rich visual elements (SVG diagrams, architecture diagrams, icons),
-  and cross-skill integration (svg-diagram, moai-domain-uiux). Supports creating
+  and cross-skill integration (svg-diagram). Supports creating
   from scratch, editing specific slides conversationally, and embedding SVG
   visualizations for maximum design impact.
   Trigger: "myslide", "make slides", "AWS presentation", "create pptx",
@@ -53,9 +53,6 @@ No external skill dependencies required.
 For richer visual output, leverage these companion skills when available:
 - **svg-diagram**: Generate pixel-perfect SVG diagrams, architecture visuals, and flowcharts
   with anti-overlap rules. Use for any slide needing diagrams beyond basic arrow connections.
-- **moai-domain-uiux**: Design system guidance — color palettes, typography pairing,
-  accessibility (WCAG), and icon selection. Use when standard AWS palette needs adaptation
-  or when mixed-language (EN+KO) typography decisions are needed.
 
 ## Default Presenter
 
@@ -349,9 +346,6 @@ Each presentation should use a MIX of these layouts. Never repeat the same layou
 | **Evolution/Progression** | Maturity stages, AI evolution | slide-patterns.md > Evolution |
 | **Multi-Card Grid** | 2x2 or 3x2 feature cards | slide-patterns.md > Multi-Card Grid |
 | **Gradient Border Cards** | Light cards with colored borders on dark bg | slide-patterns.md > Gradient Border Cards |
-| **Image Hero** | Topic intro with generated visual | slide-patterns.md > Image Hero |
-| **Image + Text Split** | Concept with illustration | slide-patterns.md > Image + Text Split |
-| **Full Image Background** | Impactful quotes, key messages | slide-patterns.md > Full Image Background |
 | **Thank You** | Last slide | slide-patterns.md > Thank You |
 
 ### Light Theme Additional Patterns
@@ -458,109 +452,6 @@ For High-Level diagrams in aws-diagram JSON, use `"type": "generic"` containers:
 
 **SVG layer order rule** (applies to all SVG diagram generation):
 Icons must render ABOVE arrows. Render order: background > containers > arrows > callouts > icons.
-
-## Image Generation (Optional)
-
-When a slide needs a **conceptual illustration, hero image, or visual metaphor** that cannot
-be expressed with SVG diagrams or AWS icons, use the `sd35l` skill (GA) to generate images
-via Amazon Bedrock. `nova2-omni` is also available as an alternative (gated preview).
-
-**Requires**: The `sd35l` skill must be installed in the Claude Code environment.
-
-### When to Use Image Generation vs SVG Diagrams
-
-| Content Type | Use SVG/Icons | Use sd35l |
-|---|---|---|
-| AWS architecture diagrams | Yes | No |
-| Process flows, step diagrams | Yes | No |
-| Conceptual hero images (AI brain, cloud, etc.) | No | Yes |
-| Abstract background visuals | No | Yes |
-| Product/scenario illustrations | No | Yes |
-| Screenshot placeholders | No | Yes |
-| Data flow with service icons | Yes | No |
-
-### Slide-Optimized Aspect Ratios
-
-| Use Case | Aspect Ratio | Slide Coverage |
-|---|---|---|
-| Full-slide background | `16:9` | Entire slide behind text |
-| Hero image (title slide) | `16:9` | Right 60-70% of slide |
-| Half-slide illustration | `2:3` or `3:4` | Left/right half |
-| Card illustration | `1:1` | Inside a content card |
-| Banner (wide strip) | `21:9` | Top or bottom strip |
-
-### Integration Workflow
-
-```bash
-# 1. Generate image with sd35l (find skill path dynamically)
-SD35L_SCRIPT=$(find ~/.claude/plugins -path "*/sd35l/scripts/generate_image.py" 2>/dev/null | head -1)
-
-python3 "$SD35L_SCRIPT" \
-  --prompt "Abstract dark gradient with glowing neural network connections, deep navy and purple tones, futuristic technology atmosphere, minimal clean composition" \
-  --negative-prompt "text, watermarks, logos, people, bright colors, white background" \
-  --aspect-ratio 16:9 \
-  --seed 42 \
-  --output-dir /tmp/myslide-assets/
-
-# 2. Result JSON: {"model": "...", "seed": 42, "images": ["/tmp/myslide-assets/sd35l_1.png"]}
-
-# 3. Embed in PptxGenJS using base64
-```
-
-### Prompt Guidelines for Presentation Images
-
-**Style keywords to include:**
-- "dark background", "deep navy", "dark gradient" (matches AWS theme)
-- "minimal", "clean composition" (professional look)
-- "glowing", "luminous accents" (matches orange/magenta highlights)
-- "futuristic", "technology", "digital" (AWS tech context)
-
-**Standard negative prompt for all slide images:**
-```
-"text, watermarks, logos, bright white background, oversaturated, cartoon, cluttered, busy composition, blurry"
-```
-
-**Prompt templates by slide type:**
-
-| Slide Type | Prompt Pattern |
-|---|---|
-| Title hero | "[Topic concept] visualization, dark futuristic background, glowing [accent color] accents, cinematic wide shot, professional technology illustration" |
-| Content illustration | "[Concept] depicted as [visual metaphor], dark navy background, clean minimal style, soft ambient lighting, 3D render" |
-| Background overlay | "Abstract [theme] pattern, dark gradient from deep navy to black, subtle glowing particles, seamless texture, minimal" |
-| Card thumbnail | "[Subject icon/symbol], centered on dark background, simple flat design with glow effect, single color accent, square composition" |
-
-### Embedding Generated Images in PptxGenJS
-
-```javascript
-const fs = require('fs');
-
-const heroImage = fs.readFileSync('/tmp/myslide-assets/sd35l_1.png');
-const heroBase64 = 'image/png;base64,' + heroImage.toString('base64');
-
-// Full-slide background image
-slide.background = { data: heroBase64 };
-
-// Or position as a visual element
-slide.addImage({
-  data: heroBase64,
-  x: 5.5, y: 0, w: 7.83, h: 7.5,  // Right 60% of slide
-});
-
-// Semi-transparent overlay on top of image (for text readability)
-slide.addShape(pres.shapes.RECTANGLE, {
-  x: 0, y: 0, w: 13.33, h: 7.5,
-  fill: { color: "000000", transparency: 50 }
-});
-```
-
-### Cost Awareness
-
-- SD3.5 Large: ~$0.04/image regardless of aspect ratio
-- A typical 10-slide deck with 3-4 generated images: ~$0.16
-- Use `--seed` to reproduce exact images when iterating
-
-See [references/image-generation-integration.md](references/image-generation-integration.md) for detailed
-prompt recipes and advanced techniques.
 
 ## Rounded Rectangle Default
 
@@ -1001,7 +892,6 @@ All scripts are self-contained within `scripts/`:
 | `scripts/add_slide.py` | Add slides to existing PPTX |
 | `scripts/apply_animations.py` | Inject OOXML animations from JSON spec into PPTX |
 | `scripts/qa_validate.py` | Programmatic QA — bounds, connectors, font sizes, zero-size shapes |
-| `references/image-generation-integration.md` | sd35l / nova2-omni image generation guide for slides |
 
 **Two-Phase QA (ALWAYS run both phases):**
 

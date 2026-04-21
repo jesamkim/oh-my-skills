@@ -11,8 +11,7 @@ SVG architecture diagrams, cross-skill integration, and conversational slide edi
   Key Points Grid, Do's vs Don'ts, CTA, Customer Case Study, Process Flow, Architecture,
   Comparison Table, Screenshot+Text, Summary Grid, Multi-Card Grid, Thank You, and more
 - **SVG Diagrams**: Auto-generate architecture and flow diagrams with 248 AWS service icons
-- **Cross-Skill Integration**: `svg-diagram` for diagrams, `moai-domain-uiux` for design guidance
-- **Image Generation**: `sd35l` / `nova2-omni` for hero images and conceptual illustrations
+- **Cross-Skill Integration**: `svg-diagram` for pixel-perfect diagram generation
 - **Animations**: OOXML-based animation system with JSON spec and Python post-processor
 - **Conversational Editing**: Modify specific slides by number via natural language
 - **Parallel Generation**: Sub-agent strategy (8+ slides) and team-up strategy (15+ slides)
@@ -86,8 +85,7 @@ myslide/
 │   ├── slide-patterns.md             # 19+ layout patterns with PptxGenJS code
 │   ├── pptxgenjs.md                  # PptxGenJS creation guide
 │   ├── editing.md                    # Existing PPTX editing workflow
-│   ├── animations.md                 # OOXML animation primitives
-│   └── image-generation-integration.md  # sd35l/nova2-omni integration
+│   └── animations.md                 # OOXML animation primitives
 └── scripts/
     ├── create_aws_slide.py           # Background/SVG/logo asset generator
     ├── apply_animations.py           # Inject OOXML animations from JSON

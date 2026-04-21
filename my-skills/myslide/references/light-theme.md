@@ -395,31 +395,6 @@ When generating SVG diagrams for light-theme slides:
 Hub-spoke and architecture diagrams work the same way as dark theme, but with
 inverted text colors and lighter container fills.
 
-### moai-domain-uiux Skill
-
-Use `moai-domain-uiux` for design system decisions:
-- **Color palette selection**: When the user's content doesn't fit the standard AWS palette,
-  use moai's 161 color palettes to find a complementary scheme
-- **Typography guidance**: For mixed-language slides (English + Korean), use moai's
-  57 font pairing recommendations
-- **Accessibility check**: Ensure WCAG AA contrast ratios on light backgrounds
-  (especially light-colored text on white/cream backgrounds)
-- **Icon selection**: moai provides icon style guidance when AWS service icons aren't appropriate
-
-### sd35l / nova2-omni (Image Generation)
-
-For light-theme presentations, adjust image generation prompts:
-- Replace "dark background" with "white background" or "light gradient background"
-- Use "soft pastel tones" instead of "dark futuristic"
-- "Clean minimal illustration" for hero images
-- "Professional corporate style" for conceptual visuals
-
-**Prompt template for light theme images:**
-```
-[Concept] visualization, clean white background, soft [accent color] accents,
-professional corporate illustration, minimal flat design, subtle gradient
-```
-
 ---
 
 ## AWS Internal Badge Pattern
