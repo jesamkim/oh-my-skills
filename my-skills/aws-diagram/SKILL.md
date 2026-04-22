@@ -293,6 +293,15 @@ See `examples/` directory for complete JSON definitions:
 | Serverless API | `examples/serverless-api.json` | API GW, Lambda, DynamoDB, Cognito | Infrastructure |
 | Data Pipeline | `examples/data-pipeline.json` | S3, Glue, Kinesis, Redshift, QuickSight | High-Level |
 | Static Website | `examples/static-website.json` | CloudFront, S3, Route 53 | High-Level |
+| SCM AI + MCP Bridge | `examples/scm-ai-mcp-integration.json` | AgentCore, MCP Gateway, on-premises systems | High-Level |
+
+For architectures where Bedrock AgentCore (or Bedrock Agents) needs to call
+out to external/on-premises systems via Model Context Protocol, see
+[references/mcp-external-integration.md](references/mcp-external-integration.md).
+That pattern has specific visual conventions (purple `#8C4FFF` dashed bidirectional
+arrows, `on-premises` icons, single shared `"MCP Protocol"` label, generic container
+for the external grouping) that should be reused across customers — don't reinvent
+the styling each time.
 
 ### Additional Patterns
 

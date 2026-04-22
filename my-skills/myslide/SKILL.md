@@ -107,6 +107,28 @@ When the user says "change slide 3" or "update the title slide":
 3. Apply targeted changes (text, colors, layout, or visual elements)
 4. Re-render and verify only the affected slides
 
+#### B.1 Overlay on a File You Didn't Generate
+
+If the customer (or a teammate) has drawn a slide in PowerPoint and you need
+to ADD a few elements to it without redrawing everything, use python-pptx
+overlay rather than regenerating from scratch. See
+[references/pptx-overlay.md](references/pptx-overlay.md) for the full workflow,
+including the `add_connector` endpoint-vs-width trap that is the most common
+cause of diagonal arrows piercing the slide title. That reference also has
+ready-to-copy helper functions for dashed lines, arrowheads, transparent
+container boxes, and zero-margin text labels.
+
+Typical overlay use cases:
+- Adding a new external system group (e.g., MCP bridge to on-premises systems)
+  to an existing architecture slide
+- Inserting a callout or annotation on a partner-provided deck
+- Fixing one mispositioned label without touching anything else
+
+For the MCP-specific styling (color, dash pattern, label convention), also
+read `references/mcp-external-integration.md` in the `aws-diagram` skill.
+Even when overlaying on an existing file, the visual conventions should match
+the from-scratch aws-diagram output so diagrams across the deck look consistent.
+
 ### C. Sub-Agent Strategy for Large Decks (8+ slides)
 
 For presentations with many slides, use parallel sub-agents to maximize throughput.

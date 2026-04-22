@@ -1,0 +1,44 @@
+{
+  "title": "SCM AI Target Architecture",
+  "subtitle": "Bedrock AgentCore + MCP Protocol → Welstory On-Premises Systems",
+  "theme": "light",
+  "size": "complex",
+  "nodes": [
+    {"id": "user",       "service": "users",             "label": "Users",             "sublabel": "Nutritionist",        "x": 0, "y": 2},
+    {"id": "cf",         "service": "cloudfront",        "label": "Amazon CloudFront", "sublabel": "SPA",                 "x": 1, "y": 1},
+    {"id": "cognito",    "service": "cognito",           "label": "Amazon Cognito",    "sublabel": "Auth",                "x": 1, "y": 3},
+    {"id": "apigw",      "service": "api-gateway",       "label": "API Gateway",                                           "x": 2, "y": 2},
+
+    {"id": "agentcore",  "service": "bedrock-agentcore", "label": "AgentCore Runtime","sublabel": "Strands + Memory",    "x": 3, "y": 2, "container": "platform"},
+    {"id": "mcp",        "service": "lambda",            "label": "MCP Gateway",       "sublabel": "MCP Server",          "x": 4, "y": 2, "container": "platform"},
+    {"id": "bedrock",    "service": "bedrock",           "label": "Amazon Bedrock",    "sublabel": "Claude Sonnet 4.6",   "x": 3, "y": 4, "container": "platform"},
+
+    {"id": "s3tables",   "service": "s3",                "label": "S3 Tables",         "sublabel": "Iceberg (SAP)",       "x": 4, "y": 4},
+    {"id": "opensearch", "service": "opensearch",        "label": "OpenSearch",        "sublabel": "Vector",              "x": 5, "y": 4},
+    {"id": "neptune",    "service": "neptune",           "label": "Neptune",           "sublabel": "Menu graph",          "x": 6, "y": 4},
+
+    {"id": "meal",       "service": "on-premises",       "label": "Meal Forecast",     "sublabel": "On-Premises",         "x": 6, "y": 1, "container": "welstory"},
+    {"id": "menu",       "service": "on-premises",       "label": "Smart Menu Planning","sublabel": "On-Premises",        "x": 6, "y": 2, "container": "welstory"},
+    {"id": "sap",        "service": "on-premises",       "label": "SAP",               "sublabel": "Purchase orders",     "x": 6, "y": 3, "container": "welstory"}
+  ],
+  "connections": [
+    {"source": "user",   "target": "cf",        "label": "HTTPS", "style": "solid"},
+    {"source": "cf",     "target": "apigw",                       "style": "solid"},
+    {"source": "cognito","target": "apigw",     "label": "Auth",  "style": "dashed"},
+    {"source": "apigw",  "target": "agentcore", "label": "Invoke","style": "solid"},
+    {"source": "agentcore","target": "bedrock", "label": "Model call","style": "solid"},
+    {"source": "agentcore","target": "mcp",                       "style": "solid"},
+
+    {"source": "bedrock","target": "s3tables",  "label": "Retrieve/Store","style": "solid"},
+    {"source": "bedrock","target": "opensearch","style": "solid"},
+    {"source": "bedrock","target": "neptune",   "style": "solid"},
+
+    {"source": "mcp", "target": "meal", "label": "MCP Protocol", "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"},
+    {"source": "mcp", "target": "menu",                          "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"},
+    {"source": "mcp", "target": "sap",                           "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"}
+  ],
+  "containers": [
+    {"id": "platform", "type": "generic", "label": "Amazon Bedrock AgentCore Platform", "children": ["agentcore", "mcp", "bedrock"]},
+    {"id": "welstory", "type": "generic", "label": "Welstory On-Premises Systems",     "children": ["meal", "menu", "sap"]}
+  ]
+}
