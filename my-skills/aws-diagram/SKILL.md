@@ -186,6 +186,11 @@ x=2~3 bottom: Observability (CloudWatch y=5, X-Ray y=5)
 {"id": "platform", "type": "generic", "label": "Amazon Bedrock AgentCore", "children": ["runtime", "code-interp", "identity", "memory", "gateway", "observability"]}
 ```
 
+Each child node inside the container should use the `bedrock-agentcore` icon so the whole platform reads as a single AWS service family, e.g.:
+```json
+{"id": "runtime", "service": "bedrock-agentcore", "label": "AgentCore Runtime", "sublabel": "Strands + Memory", "x": 2, "y": 2, "container": "platform"}
+```
+
 ---
 
 ## AWS Category Color System
@@ -198,7 +203,7 @@ x=2~3 bottom: Observability (CloudWatch y=5, X-Ray y=5)
 | Networking | `#8C4FFF` | VPC, CloudFront, Route 53, API Gateway, ELB, Direct Connect, Transit Gateway, VPC Lattice, PrivateLink |
 | Security | `#DD344C` | IAM, WAF, Shield, KMS, Secrets Manager, ACM, Cognito, GuardDuty, Security Hub |
 | App Integration | `#E7157B` | SQS, SNS, EventBridge, Step Functions, AppSync, MQ |
-| AI/ML | `#01A88D` | Bedrock, SageMaker, Rekognition, Textract, Comprehend, Lex, Amazon Q |
+| AI/ML | `#01A88D` | Bedrock, Bedrock AgentCore, SageMaker, Rekognition, Textract, Comprehend, Lex, Amazon Q |
 | Management | `#E7157B` | CloudWatch, CloudFormation, CloudTrail, Systems Manager, Config, Organizations, X-Ray |
 | Analytics | `#8C4FFF` | Athena, Glue, Kinesis, QuickSight, Lake Formation, EMR, OpenSearch, Data Firehose |
 
@@ -310,7 +315,7 @@ Service icons are in `icons/` directory. Use the filename (without .svg) as the 
 **Networking:** vpc, cloudfront, route53, api-gateway, elb, direct-connect, global-accelerator, transit-gateway, vpc-lattice, privatelink, client-vpn, cloud-wan, cloud-map, app-mesh, efa
 **Security:** iam, waf, shield, kms, secrets-manager, acm, cognito, guardduty, security-hub, detective, audit-manager, cloudhsm, directory-service, artifact
 **App Integration:** sqs, sns, eventbridge, step-functions, appsync, mq, appflow, b2b-data-interchange
-**AI/ML:** bedrock, sagemaker, rekognition, textract, comprehend, comprehend-medical, lex, q, augmented-ai, deepracer, elastic-inference
+**AI/ML:** bedrock, bedrock-agentcore, sagemaker, rekognition, textract, comprehend, comprehend-medical, lex, q, augmented-ai, deepracer, elastic-inference
 **Management:** cloudwatch, cloudformation, cloudtrail, systems-manager, config, organizations, x-ray, control-tower, devops-guru, appconfig, chatbot, cloud-control-api, cloudshell
 **Analytics:** athena, glue, kinesis, quicksight, lake-formation, emr, opensearch, data-firehose, data-exchange, datazone, clean-rooms, cloudsearch
 **Developer:** codepipeline, codebuild, codecommit, codedeploy, codeartifact, codecatalyst, codeguru, cloud9, cli, cdk, application-composer
@@ -348,6 +353,7 @@ These are non-negotiable rules. Violating them produces architecturally incorrec
 - **Cognito is an auth sidecar, not in the traffic path.** Always connect APIGW->Cognito as a dashed "Auth" line exiting from APIGW's LEFT or TOP port. Never place Cognito in the main left-to-right traffic flow.
 - **Services outside VPC must NOT touch VPC/Subnet borders.** SQS, S3, Bedrock, Step Functions are regional services -- they must have >= 30px visual gap from any VPC or Subnet border line.
 - **AgentCore sub-services are internal** -- CodeInterpreter, Identity, Memory, Gateway, Observability are part of AgentCore Runtime. Group them inside a single generic container with dashed border.
+- **Use the dedicated `bedrock-agentcore` icon for AgentCore nodes** -- the AgentCore service has its own official icon as of the Q1 2026 Architecture Icons release. Use `"service": "bedrock-agentcore"` for any AgentCore Runtime node, rather than reusing the generic `bedrock` icon with a sublabel. The two icons share the AI/ML teal color (`#01A88D`) but have distinct glyphs -- viewers of the rendered diagram can tell AgentCore apart from Bedrock at a glance. When showing AgentCore sub-services (Memory, Gateway, Identity, etc.) as separate nodes, it is acceptable to reuse `bedrock-agentcore` for each and differentiate by the `sublabel` (e.g., "Memory", "Gateway"), since AWS has not published individual icons for those sub-services.
 
 ### Arrow-Icon Collision Rules
 - **Arrows must NEVER cross over service icons.** The orthogonal router performs obstacle avoidance (up to 3 iterations), but if an arrow still visually overlaps an icon in the rendered PNG, fix it by:
