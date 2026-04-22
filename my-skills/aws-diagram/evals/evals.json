@@ -1,10 +1,10 @@
 {
   "skill_name": "aws-diagram",
-  "notes": "Prompts capture recurring real-world patterns. Run via skill-creator eval loop when ready. MCP integration prompts come from the Samsung Welstory SCM AI engagement (Apr 2026); they're broad enough to apply to any similar enterprise use case.",
+  "notes": "Prompts capture recurring real-world patterns. Run via skill-creator eval loop when ready. MCP integration prompts come from an enterprise SCM AI engagement (Apr 2026); they're broad enough to apply to any similar enterprise use case.",
   "evals": [
     {
       "id": 1,
-      "prompt": "고객이 Bedrock AgentCore 기반 멀티에이전트 플랫폼을 구축 중인데, AgentCore의 MCP Gateway를 통해 기존 온프레미스 시스템 두 개(식수예측, 스마트 메뉴플래닝)를 도구로 호출하려고 합니다. 이 아키텍처를 aws-diagram 스킬로 한 장의 SVG/PNG 다이어그램으로 그려주세요. User → API Gateway → AgentCore Runtime → MCP Gateway → 두 On-Prem 시스템 흐름이 명확해야 하고, MCP 연결은 시각적으로 다른 AWS 서비스 호출과 구분되어야 합니다.",
+      "prompt": "고객이 Bedrock AgentCore 기반 멀티에이전트 플랫폼을 구축 중인데, AgentCore의 MCP Gateway를 통해 기존 온프레미스 시스템 두 개(레거시 시스템 A, 레거시 시스템 B)를 도구로 호출하려고 합니다. 이 아키텍처를 aws-diagram 스킬로 한 장의 SVG/PNG 다이어그램으로 그려주세요. User → API Gateway → AgentCore Runtime → MCP Gateway → 두 On-Prem 시스템 흐름이 명확해야 하고, MCP 연결은 시각적으로 다른 AWS 서비스 호출과 구분되어야 합니다.",
       "expected_output": "고해상도 PNG와 SVG. MCP 화살표는 #8C4FFF 점선 양방향, 단일 'MCP Protocol' 라벨, 외부 시스템은 on-premises 아이콘 + generic 컨테이너(회색 점선)로 그룹핑되어야 함. AgentCore Runtime에는 bedrock-agentcore 아이콘 사용.",
       "files": []
     },

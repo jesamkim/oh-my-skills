@@ -1,10 +1,10 @@
 {
   "skill_name": "myslide",
-  "notes": "Prompts focus on the python-pptx overlay workflow introduced after the Welstory SCM AI project (Apr 2026). The overlay path is distinct from the from-scratch PptxGenJS workflow; these prompts exercise that decision boundary.",
+  "notes": "Prompts focus on the python-pptx overlay workflow introduced after an enterprise SCM AI project (Apr 2026). The overlay path is distinct from the from-scratch PptxGenJS workflow; these prompts exercise that decision boundary.",
   "evals": [
     {
       "id": 1,
-      "prompt": "첨부된 기존 SCM_AI_Architecture_Slide_v10.pptx는 엔지니어가 파워포인트로 직접 그린 아키텍처 슬라이드입니다. 이 슬라이드에 우측 상단 빈 공간을 활용해 '식수예측 시스템'과 '스마트 메뉴플래닝' 두 개의 On-Premises 시스템 아이콘을 추가하고, AgentCore 내부의 MCP Gateway에서 두 시스템으로 향하는 보라색 점선 양방향 화살표(MCP Protocol 라벨)를 overlay 해주세요. 기존 요소는 절대 건드리지 말 것.",
+      "prompt": "첨부된 기존 SCM_AI_Architecture_Slide_v10.pptx는 엔지니어가 파워포인트로 직접 그린 아키텍처 슬라이드입니다. 이 슬라이드에 우측 상단 빈 공간을 활용해 '레거시 시스템 A'와 '레거시 시스템 B' 두 개의 On-Premises 시스템 아이콘을 추가하고, AgentCore 내부의 MCP Gateway에서 두 시스템으로 향하는 보라색 점선 양방향 화살표(MCP Protocol 라벨)를 overlay 해주세요. 기존 요소는 절대 건드리지 말 것.",
       "expected_output": "v11 PPTX 파일. 기존 모든 도형은 보존, 새로 추가된 요소만 우측 상단에 배치. 화살표는 L자 orthogonal 경로로 제목/부제 영역을 침범하지 않아야 함. python-pptx overlay 방식 사용 (PptxGenJS로 전체 재생성 X).",
       "files": ["SCM_AI_Architecture_Slide_v10.pptx"]
     },

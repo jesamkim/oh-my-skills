@@ -3,7 +3,7 @@
 Pattern for showing how an AWS AI agent platform (Bedrock AgentCore, Bedrock Agents)
 connects to external/on-premises systems via the Model Context Protocol (MCP).
 
-Captured from real customer architecture work (Samsung Welstory SCM AI, Q1 2026).
+Captured from real customer architecture work (enterprise SCM AI engagement, Q1 2026).
 This is a recurring pattern whenever a customer asks to show "MCP integration with
 legacy systems" — the same visual conventions should apply every time.
 
@@ -79,8 +79,8 @@ Key placement rules:
     {"id": "apigw", "service": "api-gateway", "label": "API Gateway", "x": 1, "y": 2},
     {"id": "agentcore", "service": "bedrock-agentcore", "label": "AgentCore Runtime", "sublabel": "Strands + Memory", "x": 2, "y": 2, "container": "platform"},
     {"id": "mcp", "service": "lambda", "label": "MCP Gateway", "sublabel": "MCP Server", "x": 3, "y": 2, "container": "platform"},
-    {"id": "sys1", "service": "on-premises", "label": "Meal Forecast", "sublabel": "On-Premises", "x": 4, "y": 1, "container": "welstory"},
-    {"id": "sys2", "service": "on-premises", "label": "Menu Planning", "sublabel": "On-Premises", "x": 4, "y": 3, "container": "welstory"}
+    {"id": "sys1", "service": "on-premises", "label": "Legacy System A", "sublabel": "On-Premises", "x": 4, "y": 1, "container": "onprem"},
+    {"id": "sys2", "service": "on-premises", "label": "Legacy System B", "sublabel": "On-Premises", "x": 4, "y": 3, "container": "onprem"}
   ],
   "connections": [
     {"source": "user", "target": "apigw", "label": "HTTPS", "style": "solid"},
@@ -91,7 +91,7 @@ Key placement rules:
   ],
   "containers": [
     {"id": "platform", "type": "generic", "label": "Amazon Bedrock AgentCore Platform", "children": ["agentcore", "mcp"]},
-    {"id": "welstory", "type": "generic", "label": "Welstory On-Premises Systems", "children": ["sys1", "sys2"]}
+    {"id": "onprem", "type": "generic", "label": "Customer On-Premises Systems", "children": ["sys1", "sys2"]}
   ]
 }
 ```
@@ -101,7 +101,7 @@ Notes:
   visually since they all originate from the same MCP Gateway
 - `source_port: "right"` on the MCP connections forces both to exit the MCP Gateway's
   right edge, which creates the visual "one protocol, many tools" fan-out
-- `container: "welstory"` groups the external systems in a generic container that
+- `container: "onprem"` groups the external systems in a generic container that
   renders with dashed gray border — the `aws-diagram` engine handles this automatically
 
 See `examples/scm-ai-mcp-integration.json` for a complete, renderable example.

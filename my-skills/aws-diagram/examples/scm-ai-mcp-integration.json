@@ -1,10 +1,10 @@
 {
   "title": "SCM AI Target Architecture",
-  "subtitle": "Bedrock AgentCore + MCP Protocol → Welstory On-Premises Systems",
+  "subtitle": "Bedrock AgentCore + MCP Protocol → Customer On-Premises Systems",
   "theme": "light",
   "size": "complex",
   "nodes": [
-    {"id": "user",       "service": "users",             "label": "Users",             "sublabel": "Nutritionist",        "x": 0, "y": 2},
+    {"id": "user",       "service": "users",             "label": "Users",             "sublabel": "End User",            "x": 0, "y": 2},
     {"id": "cf",         "service": "cloudfront",        "label": "Amazon CloudFront", "sublabel": "SPA",                 "x": 1, "y": 1},
     {"id": "cognito",    "service": "cognito",           "label": "Amazon Cognito",    "sublabel": "Auth",                "x": 1, "y": 3},
     {"id": "apigw",      "service": "api-gateway",       "label": "API Gateway",                                           "x": 2, "y": 2},
@@ -15,11 +15,11 @@
 
     {"id": "s3tables",   "service": "s3",                "label": "S3 Tables",         "sublabel": "Iceberg (SAP)",       "x": 4, "y": 4},
     {"id": "opensearch", "service": "opensearch",        "label": "OpenSearch",        "sublabel": "Vector",              "x": 5, "y": 4},
-    {"id": "neptune",    "service": "neptune",           "label": "Neptune",           "sublabel": "Menu graph",          "x": 6, "y": 4},
+    {"id": "neptune",    "service": "neptune",           "label": "Neptune",           "sublabel": "Graph",               "x": 6, "y": 4},
 
-    {"id": "meal",       "service": "on-premises",       "label": "Meal Forecast",     "sublabel": "On-Premises",         "x": 6, "y": 1, "container": "welstory"},
-    {"id": "menu",       "service": "on-premises",       "label": "Smart Menu Planning","sublabel": "On-Premises",        "x": 6, "y": 2, "container": "welstory"},
-    {"id": "sap",        "service": "on-premises",       "label": "SAP",               "sublabel": "Purchase orders",     "x": 6, "y": 3, "container": "welstory"}
+    {"id": "sys_a",      "service": "on-premises",       "label": "Legacy System A",   "sublabel": "On-Premises",         "x": 6, "y": 1, "container": "onprem"},
+    {"id": "sys_b",      "service": "on-premises",       "label": "Legacy System B",   "sublabel": "On-Premises",         "x": 6, "y": 2, "container": "onprem"},
+    {"id": "sap",        "service": "on-premises",       "label": "SAP",               "sublabel": "Purchase orders",     "x": 6, "y": 3, "container": "onprem"}
   ],
   "connections": [
     {"source": "user",   "target": "cf",        "label": "HTTPS", "style": "solid"},
@@ -33,12 +33,12 @@
     {"source": "bedrock","target": "opensearch","style": "solid"},
     {"source": "bedrock","target": "neptune",   "style": "solid"},
 
-    {"source": "mcp", "target": "meal", "label": "MCP Protocol", "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"},
-    {"source": "mcp", "target": "menu",                          "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"},
-    {"source": "mcp", "target": "sap",                           "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"}
+    {"source": "mcp", "target": "sys_a", "label": "MCP Protocol", "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"},
+    {"source": "mcp", "target": "sys_b",                          "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"},
+    {"source": "mcp", "target": "sap",                            "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"}
   ],
   "containers": [
     {"id": "platform", "type": "generic", "label": "Amazon Bedrock AgentCore Platform", "children": ["agentcore", "mcp", "bedrock"]},
-    {"id": "welstory", "type": "generic", "label": "Welstory On-Premises Systems",     "children": ["meal", "menu", "sap"]}
+    {"id": "onprem",   "type": "generic", "label": "Customer On-Premises Systems",      "children": ["sys_a", "sys_b", "sap"]}
   ]
 }
