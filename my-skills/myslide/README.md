@@ -10,7 +10,10 @@ SVG architecture diagrams, cross-skill integration, and conversational slide edi
 - **25+ Slide Layouts**: Title, Agenda, Section Header, Content Card, Two/Three Column,
   Key Points Grid, Do's vs Don'ts, CTA, Customer Case Study, Process Flow, Architecture,
   Comparison Table, Screenshot+Text, Summary Grid, Multi-Card Grid, Thank You, and more
-- **SVG Diagrams**: Auto-generate architecture and flow diagrams with 248 AWS service icons
+- **Design Spec Gate**: Pre-build markdown spec + HTML wireframe preview for 3+ slide
+  decks — catches structural rework (wrong order, monotonous layouts) at the cheapest stage
+- **SVG Diagrams**: Auto-generate architecture and flow diagrams with 304 AWS service icons
+  (including 56 Bedrock AgentCore component variants)
 - **Cross-Skill Integration**: `svg-diagram` for pixel-perfect diagram generation
 - **Animations**: OOXML-based animation system with JSON spec and Python post-processor
 - **Conversational Editing**: Modify specific slides by number via natural language
@@ -78,18 +81,20 @@ SVG architecture diagrams, cross-skill integration, and conversational slide edi
 myslide/
 ├── SKILL.md                          # Main skill instructions (dual theme)
 ├── README.md                         # This file
-├── icons/                            # 248 official AWS service icons (SVG)
+├── icons/                            # 304 official AWS service icons (SVG; incl. 56 AgentCore variants)
 ├── references/
 │   ├── aws-theme.md                  # Dark theme: colors, fonts, JS constants
 │   ├── light-theme.md                # Light theme: colors, patterns, JS constants
 │   ├── slide-patterns.md             # 19+ layout patterns with PptxGenJS code
 │   ├── pptxgenjs.md                  # PptxGenJS creation guide
 │   ├── editing.md                    # Existing PPTX editing workflow
-│   └── animations.md                 # OOXML animation primitives
+│   ├── animations.md                 # OOXML animation primitives
+│   └── design-spec-template.md       # Pre-build design spec template + approval flow
 └── scripts/
     ├── create_aws_slide.py           # Background/SVG/logo asset generator
     ├── apply_animations.py           # Inject OOXML animations from JSON
     ├── qa_validate.py                # Programmatic QA (bounds, fonts, shapes)
+    ├── render_design_preview.py      # Design spec → HTML preview (wireframes + palette)
     ├── thumbnail.py                  # Thumbnail grid for visual overview
     ├── clean.py                      # Clean PPTX XML
     ├── add_slide.py                  # Add slides to existing PPTX
@@ -114,6 +119,28 @@ myslide/
 | `markitdown[pptx]` | pip | Text extraction from PPTX |
 | `pdftoppm` (poppler) | system | PDF to slide images (QA) |
 | `soffice` (LibreOffice) | system | PPTX to PDF conversion |
+
+## Design Spec Workflow
+
+For 3+ slide decks, MySlide produces a **markdown design spec** and (for 8+ slides)
+an **HTML wireframe preview** before any PptxGenJS code is written. This catches
+structural rework — wrong slide order, monotonous layouts, missing diagrams — at
+seconds-to-fix stage rather than after the build.
+
+```bash
+# 1. Agent writes design-specs/<deck-name>.md (slide table + theme + open questions)
+# 2. Render an HTML preview for visual review
+python3 scripts/render_design_preview.py design-specs/<deck-name>.md
+# Opens in browser: theme palette chips + per-slide wireframe thumbnails.
+# Variety warnings (3-streak layouts, no-diagram decks) appear at the top.
+```
+
+The user reviews and says "go" / "승인" / "OK" before the agent moves to
+PptxGenJS generation. See `references/design-spec-template.md` for the full
+template and gate rules (1-2 slides skip the gate; "design first" / "디자인 먼저"
+always engages it).
+
+![Design preview screenshot — palette chips + slide wireframe thumbnails](docs/images/design-preview.png)
 
 ## Asset Generation
 

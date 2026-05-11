@@ -63,7 +63,38 @@ When generating title/thank-you slides, ask the user for their presenter info (n
 ### A. Creating a New Presentation
 
 1. **Gather requirements**: Ask the user for topic, key messages, and target audience
-2. **Plan slide structure**: Outline slide titles and content types before writing any code
+2. **Write a design spec** (when applicable — see gate below): Produce a markdown
+   spec that lists every slide's layout, key message, and visual intent. Save to
+   `design-specs/<deck-name>.md`. See [references/design-spec-template.md](references/design-spec-template.md)
+   for the table format and approval flow.
+
+   **Spec gate — when to require a spec before any PPTX work:**
+
+   | Scope | Spec? | HTML preview? |
+   |-------|-------|---------------|
+   | 1-2 slides, single edit | No | No |
+   | 3-7 slide deck | Yes (markdown only) | Optional |
+   | 8+ slide deck | Yes | Yes |
+   | User says "design first" / "디자인 먼저" / "plan first" | Always | Always |
+
+   The reason: structural rework (wrong slide order, monotonous layout, wrong
+   theme) is the most expensive kind to fix once PptxGenJS code exists. A
+   spec catches it in seconds. For a quick one-pager the gate adds friction
+   without the savings, so skip it.
+
+   **Approval is mandatory** for decks where the gate applies. After writing
+   the spec (and rendering the preview if applicable), wait for the user to
+   say "go" / "승인" / "OK" / "진행" before moving to step 3. If they ask
+   for changes, edit the spec, re-render, ask again — don't start building
+   from a partially-approved spec.
+
+   **HTML preview** (8+ slides):
+   ```bash
+   python3 scripts/render_design_preview.py design-specs/<deck-name>.md
+   # Opens in browser: theme palette chips + per-slide wireframe thumbnails.
+   # Variety warnings (3-streak layouts, no-diagram decks) appear at top.
+   ```
+
 3. **Generate background images**: Run the gradient background generator script
 4. **Create slides**: Use PptxGenJS (Node.js) with the AWS theme constants
 5. **Add SVG visuals**: Generate SVG diagrams for architecture/flow slides and embed as images
@@ -409,11 +440,20 @@ python3 scripts/create_aws_slide.py svg-diagram \
 ```
 
 **Available icon names** (use these as element names for automatic icon embedding):
-Lambda, EC2, S3, DynamoDB, API Gateway, CloudFront, Bedrock, ECS, EKS, RDS,
+Lambda, EC2, S3, DynamoDB, API Gateway, CloudFront, Bedrock, Bedrock AgentCore, ECS, EKS, RDS,
 Aurora, VPC, ELB, Route 53, CloudWatch, IAM, Cognito, SNS, SQS, Step Functions,
 EventBridge, Kinesis, SageMaker, Redshift, Athena, Glue, KMS, WAF, Shield,
 Fargate, ECR, AppSync, OpenSearch, ElastiCache, Secrets Manager, ACM, and 200+ more.
 See `icons/` directory for the full list of available service icons.
+
+**AgentCore component-specific icons**: 56 variants covering 9 AgentCore components
+(logo, ai-agent, runtime, gateway, identity, code-interpreter, observability, browser-tool, memory)
+across 4 color accents (teal, blue, purple, cyan) and 2 themes (light, dark).
+Pattern: `agentcore-{component}-{color}-{theme}.svg` — e.g., `agentcore-runtime-teal-light.svg`.
+Use these in slides when highlighting individual AgentCore services with matching color to slide theme:
+- Light-theme (L100/field-enablement) slides → `*-light` variants (black outline + accent)
+- Dark-theme (reInvent) slides → `*-dark` variants (white outline + accent)
+Embed via `<img src="icons/agentcore-{name}.svg">` or place through svg-diagram.
 
 Alternatively, craft SVG inline in the Node.js script and use `sharp` to convert to PNG base64.
 
@@ -904,7 +944,7 @@ All scripts are self-contained within `scripts/`:
 
 | Script / Directory | Purpose |
 |--------|---------|
-| `icons/` | 248 official AWS service icons (SVG, from AWS Architecture Icon Deck) |
+| `icons/` | 304 official AWS service icons (SVG), including 56 AgentCore component variants |
 | `scripts/create_aws_slide.py` | Generate AWS gradient backgrounds, SVG diagrams with official icons, logo |
 | `scripts/office/soffice.py` | Convert PPTX to PDF via LibreOffice |
 | `scripts/office/unpack.py` | Unpack PPTX to XML for direct editing |
@@ -914,6 +954,8 @@ All scripts are self-contained within `scripts/`:
 | `scripts/add_slide.py` | Add slides to existing PPTX |
 | `scripts/apply_animations.py` | Inject OOXML animations from JSON spec into PPTX |
 | `scripts/qa_validate.py` | Programmatic QA — bounds, connectors, font sizes, zero-size shapes |
+| `scripts/render_design_preview.py` | Design spec → HTML preview (palette chips + slide wireframes) for pre-build approval |
+| `references/design-spec-template.md` | Pre-build design spec template (slide table, approval flow, variety check) |
 
 **Two-Phase QA (ALWAYS run both phases):**
 
