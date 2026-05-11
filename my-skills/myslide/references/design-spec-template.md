@@ -6,8 +6,10 @@ HTML preview from `scripts/render_design_preview.py`). This catches structural
 mistakes — wrong slide order, repeated layouts, missing diagrams — at a stage
 where they cost minutes to fix, not hours.
 
-Save the spec to `design-specs/<deck-name>.md` next to the user's working
-directory. The file becomes the source of truth for the PPTX build step.
+Save the spec to `<user's working dir>/design-specs/<deck-name>.md` (create
+the directory if needed). The spec lives alongside the deck the user is
+building, not inside the skill repo. The file becomes the source of truth
+for the PPTX build step.
 
 ## When to produce a spec
 
@@ -114,10 +116,10 @@ make the user catch your variety problems.
 
 ## Approval flow
 
-1. Write spec to `design-specs/<deck-name>.md`
+1. Write spec to `<user working dir>/design-specs/<deck-name>.md`
 2. (Optional, for 8+ slide decks) Render HTML preview:
    ```bash
-   python3 scripts/render_design_preview.py design-specs/<deck-name>.md
+   python3 {skill_path}/scripts/render_design_preview.py <user working dir>/design-specs/<deck-name>.md
    ```
 3. Show the user the spec path (and preview URL if rendered)
 4. Wait for explicit approval — words like "go", "good", "승인", "진행", "OK"
@@ -127,9 +129,9 @@ If the user requests changes, edit the spec, re-render preview if applicable,
 and ask again. Don't start building partially-approved specs — the cost
 of changing slide 4 mid-build is much higher than editing one row in a table.
 
-## Example spec
+## Example
 
-For a fully-filled-in example, fill the template above with your own deck —
-the table format is the same regardless of topic. The `design-specs/`
-directory is created on first use; no example spec ships with this skill
-to keep the public package free of customer-specific content.
+The spec block under "Spec structure" above is the authoritative template —
+copy it, fill in values for your deck, and save. The template columns map
+1:1 to what `render_design_preview.py` expects, so following the format
+guarantees the preview renders correctly.
