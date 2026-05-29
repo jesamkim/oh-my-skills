@@ -10,8 +10,8 @@ Generate pixel-perfect SVG diagrams, banners, and architecture visualizations fo
 
 ## Key Differentiators
 - **Anti-overlap rules**: Precise coordinate calculation prevents text/element collisions
-- **Dark mode compatible**: Default palette works on both light and dark backgrounds
-- **Monospace typography**: Clean, technical aesthetic
+- **Style presets**: vercel-stripe (light, default — Vercel/Stripe-inspired, sans-serif, WCAG AA on white) and dark (legacy, monospace) for slides or explicit dark requests
+- **Reference SVG**: `vercel-stripe-reference.svg` demonstrates the exact conventions for the default preset
 - **No external dependencies**: Pure SVG markup, renders everywhere
 
 ## Version

@@ -50,39 +50,141 @@ RULE 4: Container Padding
   - If text might overflow, use font-size 9 or truncate
 ```
 
-### 3. Dark Mode Compatible
-Default palette (works on both light and dark backgrounds):
+### 3. Style Presets
+
+Two presets available. **DEFAULT: vercel-stripe (light)** from 2026-04-30.
+
+#### Preset A: vercel-stripe (LIGHT, DEFAULT)
+
+Inspired by Vercel blog + Stripe docs. Use this for blog posts, docs,
+architecture diagrams, product content.
+
+**Reference SVG**: `vercel-stripe-reference.svg` (same directory).
+READ THIS FIRST before generating — it demonstrates the exact conventions.
 
 ```xml
-<!-- Background -->
+<!-- Canvas: pure white, NO gradient -->
+fill="#FFFFFF"
+
+<!-- Card gradient -->
+<linearGradient id="cardBg" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#FFFFFF"/>
+  <stop offset="100%" stop-color="#FAFAFA"/>
+</linearGradient>
+
+<!-- Hero black gradient (ONLY for main agent/orchestrator, max 1) -->
+<linearGradient id="accentBlack" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#111111"/>
+  <stop offset="100%" stop-color="#333333"/>
+</linearGradient>
+
+<!-- Data layer pastel -->
+<linearGradient id="dataBg" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#F6F9FF"/>
+  <stop offset="100%" stop-color="#EEF3FF"/>
+</linearGradient>
+
+Stripe purple:   #635BFF (primary accent)
+Cyan:            #00D9FF (hero-inside label)
+Teal:            #00B4A6 (secondary tool accent)
+Green:           #10B981 (success, output)
+Blue (cool):     #3B4FCC (data layer label)
+
+Card border:     #E5E5EA (1px)
+Data border:     #D6DFF5 (1px)
+Divider:         #EAEAEA
+
+Primary text:    #0A0A0A
+Secondary text:  #6B6B75
+Tertiary text:   #B0B0B8
+
+Flow arrow:      #8C8C95, stroke-width 1.5, solid
+Data-ref arrow:  #B8C5E8, stroke-width 1.2, dashed (4 4)
+Return arrow:    #D6DFF5, stroke-width 1.5
+Success arrow:   #10B981, stroke-width 1.5
+
+<!-- Arrow marker -->
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+        markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+  <path d="M0,1 L9,5 L0,9 Z" fill="#8C8C95"/>
+</marker>
+
+<!-- Soft shadow (apply to ALL cards) -->
+<filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+  <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+  <feOffset dx="0" dy="2"/>
+  <feComponentTransfer><feFuncA type="linear" slope="0.08"/></feComponentTransfer>
+  <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+
+rx="12"  outer containers, hero cards
+rx="10"  default cards
+rx="8"   inner chips inside data layer
+
+font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif"
+```
+
+**Card types:**
+
+| Type            | Fill              | Border            | Use                                  |
+|-----------------|-------------------|-------------------|--------------------------------------|
+| Default         | url(#cardBg)      | #E5E5EA 1px       | Input/output, generic nodes          |
+| Hero (black)    | url(#accentBlack) | #000 1px          | **Main orchestrator — 1 per diagram** |
+| Tool card       | url(#cardBg) + 4px left accent bar | #E5E5EA 1px | External tools, APIs      |
+| Data card       | url(#dataBg)      | #D6DFF5 1px       | Data layer, storage                  |
+| Inner chip      | #FFFFFF           | #D6DFF5 1px       | Sub-items inside data layer          |
+
+**Typography:**
+- Title: 22px, weight 700, letter-spacing -0.5, #0A0A0A
+- Subtitle: 13px, weight 400, #6B6B75
+- Category label: 11px, weight 600, letter-spacing 0.3em, UPPERCASE, accent color
+- Node title: 14-15px, weight 600, #0A0A0A (or #FFFFFF on hero)
+- Description: 12px, weight 400, #6B6B75 (or #A0A0AA on hero)
+- Arrow annotation: 10px, weight 500, #6B6B75
+
+**Arrow rules:**
+- Start/end MUST snap to card edge (not center, not inside)
+- Use cubic Bezier (C) for smooth curves between diagonal nodes — NOT quadratic
+- Numbered flow labels: 1, 2, 3, 4 (or circled variants) near arrow start
+- Don't route arrows over card bodies — go around
+- Return flows: lighter gray #D6DFF5, optional dashed
+
+#### Preset B: dark (LEGACY, explicit request only)
+
+Only for conference slides, social thumbnails, or when user explicitly asks for dark.
+
+```xml
 <linearGradient id="bg">
   <stop offset="0%" style="stop-color:#0a0a2e"/>
   <stop offset="100%" style="stop-color:#1a1a3e"/>
 </linearGradient>
 
-<!-- Accent colors (high contrast on dark) -->
-Green:   #00d4aa (primary), #00ff88 (bright)
-Blue:    #00a8ff (primary), #00ccff (bright)
-Orange:  #ff9900 (AWS), #ffaa00 (warning)
-Red:     #ff4444 (error/bearish)
-Purple:  #aa88ff (secondary), #ff44ff (AI/brain)
-Yellow:  #ffdd44 (adaptive)
-Gray:    #888 (labels), #555 (secondary), #333 (lines)
+Green:   #00d4aa, #00ff88
+Blue:    #00a8ff, #00ccff
+Orange:  #ff9900, #ffaa00
+Red:     #ff4444
+Purple:  #aa88ff, #ff44ff
+Yellow:  #ffdd44
+Gray:    #888, #555, #333
 ```
 
 ### 4. Typography
+
+**vercel-stripe preset (default)**: sans-serif only
 ```xml
-<!-- Titles -->
-font-family="monospace, Courier" font-size="18-42" fill="white" font-weight="bold"
-
-<!-- Labels -->
-font-family="monospace" font-size="10-13" fill="#888"
-
-<!-- Inside boxes -->
-font-family="monospace" font-size="8-10" fill="<accent-color>"
-
-<!-- Never use serif fonts in technical diagrams -->
+font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif"
+<!-- Titles: 18-24px, weight 700, #0A0A0A -->
+<!-- Body: 12-14px, weight 400-600, #6B6B75 or #0A0A0A -->
+<!-- Category labels: 11px, weight 600, uppercase, letter-spacing 0.3em -->
 ```
+
+**dark preset (legacy)**: monospace
+```xml
+font-family="monospace" font-size="18-42" fill="white" font-weight="bold"
+```
+
+Never use serif fonts in technical diagrams. For Korean text use
+`NanumSquareRound, -apple-system, sans-serif` to avoid cairosvg tofu.
 
 ## Templates
 
@@ -100,20 +202,30 @@ font-family="monospace" font-size="8-10" fill="<accent-color>"
 </svg>
 ```
 
-### Architecture Diagram Template
+### Architecture Diagram Template (vercel-stripe default)
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif">
+  <defs>
+    <!-- See vercel-stripe-reference.svg for full defs (gradients, marker, filter) -->
+  </defs>
+  <rect width="960" height="520" fill="#FFFFFF"/>
+
+  <!-- Title block: x=40, y=50 (22px, weight 700) + subtitle y=74 (13px, #6B6B75) -->
+  <!-- Divider line: y=92 at x=40-920, #EAEAEA -->
+  <!-- Flow cards: x=40+, y=130-280 area -->
+  <!-- Data layer card: x=540, y=340, 380x100 pastel blue -->
+  <!-- Arrows: #8C8C95 1.5px, with url(#arrow) marker -->
+  <!-- Watermark: x=920, y=500, text-anchor=end, 10px #B0B0B8 -->
+</svg>
+```
+
+**Dark legacy template** (explicit request only):
 ```xml
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
   <rect width="800" height="520" fill="url(#bg)" rx="12"/>
-
-  <!-- Title: y=35 -->
-  <!-- Time labels: x=50, left column -->
-  <!-- Step boxes: x=100, width=180, height=40, rx=8 -->
-  <!-- Detail text: x=320+, right side -->
-  <!-- Pipeline section: dashed border container -->
-  <!-- Pipeline boxes: height=36, rx=6, evenly spaced -->
-  <!-- Arrows: stroke="#333", between steps -->
-  <!-- Monitoring sidebar: right side, separate box -->
-  <!-- Footer: y=500 -->
+  <!-- Title y=35, step boxes x=100 w=180 h=40 rx=8, arrows #333 -->
 </svg>
 ```
 
@@ -151,7 +263,7 @@ Before writing the final SVG, verify:
 - [ ] No two elements share the same y-range at the same x-range
 - [ ] All text fits within its container (check string length × ~6px per char at font-size 10)
 - [ ] `viewBox` dimensions accommodate all elements with 20px+ margin
-- [ ] Colors are readable on dark backgrounds (#0a0a2e)
+- [ ] Colors meet WCAG AA on white background (vercel-stripe default). Secondary text #6B6B75 passes at 12px+
 - [ ] Font sizes: titles ≥18, labels ≥10, box text ≥8
 - [ ] Arrow connectors are between steps, not overlapping content
 - [ ] `rx` (border radius) is consistent: 12 for main bg, 8 for step boxes, 6 for pipeline boxes, 4 for pills
