@@ -102,22 +102,29 @@ def _select_ports(
 def _auto_select_port(
     node: NodeLayout, other: NodeLayout, is_source: bool
 ) -> Port:
-    """Auto-select the best port based on relative position."""
+    """Auto-select the port on ``node`` that faces ``other``.
+
+    The chosen edge is always the one pointing toward ``other`` — i.e. the
+    *near* edge. This holds whether ``node`` is the arrow's source or its
+    target: an arrow between two icons should leave one near edge and enter the
+    other's near edge. If the target instead picked its *far* edge, the line
+    would have to cross straight through the icon to reach it (the arrowhead
+    landing on the wrong side, visually piercing the icon). The direction to
+    ``other`` (sign of dx/dy) fully determines the facing edge, so source and
+    target share one formula.
+
+    ``is_source`` is retained for call-site clarity but no longer changes the
+    result — keeping it avoids churning the two callers and documents intent.
+    """
     sx, sy = node.center
     tx, ty = other.center
     dx = tx - sx
     dy = ty - sy
 
     if abs(dx) >= abs(dy):
-        if is_source:
-            side = "right" if dx > 0 else "left"
-        else:
-            side = "left" if dx > 0 else "right"
+        side = "right" if dx > 0 else "left"
     else:
-        if is_source:
-            side = "bottom" if dy > 0 else "top"
-        else:
-            side = "top" if dy > 0 else "bottom"
+        side = "bottom" if dy > 0 else "top"
 
     return Port(*node.edge_center(side), side)
 

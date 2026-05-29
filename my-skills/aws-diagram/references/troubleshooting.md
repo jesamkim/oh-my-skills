@@ -35,6 +35,16 @@ Read this file when diagrams have visual issues after generation.
 **Symptom:** White space where an icon should be.
 **Fix:** Check that the `service` value matches an icon filename in `icons/`. Run with `--validate` flag to catch missing references.
 
+### 8. Arrowhead pokes out the far side of the target icon
+**Symptom:** A left-to-right arrow's head appears on the target icon's *right* edge (or a downward arrow's head on the *top* edge) — the line has run clean through the icon and out the other side. Often only a small stub is visible because the icon (drawn on top of arrows) hides most of the overrun.
+**Cause:** The path's last `L` coordinate is on the icon's far edge instead of the near edge.
+**Fix:** This was a router port-selection bug and is now fixed (`_auto_select_port` picks the edge facing the source for both endpoints). If you still see it — e.g. after forcing an awkward `target_port` — edit the SVG: find the arrow's `<path d="M ... L farX,Y">` and change the final coordinate to the near edge. The target's `<use href="#icon-..." x= y=>` gives the box; near-edge centers are `(x, y+24)` left, `(x+48, y+24)` right, `(x+24, y)` top, `(x+24, y+48)` bottom. Then `rsvg-convert -w 2048 file.svg -o file.png`.
+
+### 9. Bottom-entering arrowhead spears the icon's label text
+**Symptom:** An arrow that enters a node from below has its vertical segment and arrowhead running straight through the node's label / italic sublabel (e.g. through "Amazon Bedrock / Claude Opus · Sonnet · Haiku").
+**Cause:** The engine stops the arrowhead at the icon's bottom edge (`y+48`), but the label sits ~14px below that and the sublabel ~14px below the label. Label height is not part of the icon box, so the router can't account for it.
+**Fix:** Edit the SVG path's final `L x,Y` so `Y` is just under the lowest text line. With a sublabel, that's roughly the sublabel baseline + 10px; without one, the label line + ~16px. The arrowhead then lands cleanly beneath the text. Re-rasterize with `rsvg-convert`. Do NOT re-run the JSON generator afterward — it discards manual SVG edits.
+
 ---
 
 ## Post-Generation SVG Fixes

@@ -13,13 +13,13 @@
     {"id": "mcp",        "service": "lambda",            "label": "MCP Gateway",       "sublabel": "MCP Server",          "x": 4, "y": 2, "container": "platform"},
     {"id": "bedrock",    "service": "bedrock",           "label": "Amazon Bedrock",    "sublabel": "Claude Sonnet 4.6",   "x": 3, "y": 4, "container": "platform"},
 
-    {"id": "s3tables",   "service": "s3",                "label": "S3 Tables",         "sublabel": "Iceberg (SAP)",       "x": 4, "y": 4},
+    {"id": "s3tables",   "service": "s3",                "label": "S3 Tables",         "sublabel": "Iceberg",             "x": 4, "y": 4},
     {"id": "opensearch", "service": "opensearch",        "label": "OpenSearch",        "sublabel": "Vector",              "x": 5, "y": 4},
-    {"id": "neptune",    "service": "neptune",           "label": "Neptune",           "sublabel": "Graph",               "x": 6, "y": 4},
+    {"id": "neptune",    "service": "neptune",           "label": "Neptune",           "sublabel": "Knowledge graph",     "x": 6, "y": 4},
 
-    {"id": "sys_a",      "service": "on-premises",       "label": "Legacy System A",   "sublabel": "On-Premises",         "x": 6, "y": 1, "container": "onprem"},
-    {"id": "sys_b",      "service": "on-premises",       "label": "Legacy System B",   "sublabel": "On-Premises",         "x": 6, "y": 2, "container": "onprem"},
-    {"id": "sap",        "service": "on-premises",       "label": "SAP",               "sublabel": "Purchase orders",     "x": 6, "y": 3, "container": "onprem"}
+    {"id": "sysa",       "service": "on-premises",       "label": "External System A", "sublabel": "On-Premises",         "x": 6, "y": 1, "container": "onprem"},
+    {"id": "sysb",       "service": "on-premises",       "label": "External System B", "sublabel": "On-Premises",         "x": 6, "y": 2, "container": "onprem"},
+    {"id": "erp",        "service": "on-premises",       "label": "ERP",               "sublabel": "Transactions",        "x": 6, "y": 3, "container": "onprem"}
   ],
   "connections": [
     {"source": "user",   "target": "cf",        "label": "HTTPS", "style": "solid"},
@@ -33,12 +33,12 @@
     {"source": "bedrock","target": "opensearch","style": "solid"},
     {"source": "bedrock","target": "neptune",   "style": "solid"},
 
-    {"source": "mcp", "target": "sys_a", "label": "MCP Protocol", "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"},
-    {"source": "mcp", "target": "sys_b",                          "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"},
-    {"source": "mcp", "target": "sap",                            "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"}
+    {"source": "mcp", "target": "sysa", "label": "MCP Protocol", "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"},
+    {"source": "mcp", "target": "sysb",                          "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"},
+    {"source": "mcp", "target": "erp",                           "style": "bidirectional", "color": "#8C4FFF", "source_port": "right"}
   ],
   "containers": [
     {"id": "platform", "type": "generic", "label": "Amazon Bedrock AgentCore Platform", "children": ["agentcore", "mcp", "bedrock"]},
-    {"id": "onprem",   "type": "generic", "label": "Customer On-Premises Systems",      "children": ["sys_a", "sys_b", "sap"]}
+    {"id": "onprem", "type": "generic", "label": "Customer On-Premises Systems",     "children": ["sysa", "sysb", "erp"]}
   ]
 }

@@ -191,6 +191,22 @@ Each child node inside the container should use the `bedrock-agentcore` icon so 
 {"id": "runtime", "service": "bedrock-agentcore", "label": "AgentCore Runtime", "sublabel": "Strands + Memory", "x": 2, "y": 2, "container": "platform"}
 ```
 
+### AgentCore component-specific icons (May 2026 release)
+
+For presentations that need to distinguish individual AgentCore sub-services at a glance, AgentCore-specific outline icons are available in `icons/` with the pattern `agentcore-{component}-{color}-{theme}.svg`:
+
+**Components** (9 total): `logo`, `ai-agent`, `runtime`, `gateway`, `identity`, `code-interpreter`, `observability`, `browser-tool`, `memory`
+
+**Color variants**: `teal` (AWS brand `#01A88D`), `blue` (`#538DF7`), `purple` (`#7B27FF`), `cyan` (`#7CF9FF`, dark theme only)
+
+**Themes**: `light` (black outline + accent color, for white/light backgrounds), `dark` (white outline + accent color, for dark backgrounds)
+
+Examples:
+- `agentcore-runtime-teal-light.svg` — AgentCore Runtime in AWS teal on light bg
+- `agentcore-memory-purple-dark.svg` — AgentCore Memory in purple on dark bg
+
+These icons share a visual motif (hexagonal brain glyph + service-specific accent) and are suited for slide decks or detailed L200 diagrams. For standard architecture diagrams, prefer the single `bedrock-agentcore` icon with `sublabel` for consistency with other AWS services.
+
 ---
 
 ## AWS Category Color System
@@ -392,12 +408,21 @@ Outside-VPC services (S3, SQS, EventBridge, Step Functions, Bedrock, CodeBuild, 
 - **Above-VPC services (same x as VPC nodes) also overlap.** If a VPC node is at (x=5, y=3), placing an outside-VPC service at (x=5, y=1) will cause it to sit directly above the VPC border. Move it to x=7 instead.
 - **Verify with PNG inspection** -- after generation, visually confirm that no outside-VPC icon touches any VPC/Subnet rectangle border.
 
+### Arrowhead Endpoint Rules (verify in PNG, fix in SVG)
+The router lands each arrowhead on the icon edge that *faces the source* (the near edge), so a correctly routed arrow stops at the icon boundary. Two endpoint defects still need a human eye on the PNG, because the engine reasons about icon geometry but not about the text drawn beneath each icon:
+
+- **Arrowhead piercing the icon to the far side.** If an arrowhead appears to exit the *opposite* edge of the target (e.g. a left-to-right arrow whose head pokes out the icon's right side), the path's last `L` coordinate is on the far edge. Fix it by editing that coordinate in the SVG to the near edge — the icon's `<use x= y=>` gives the icon box (icon spans `x .. x+48` horizontally, `y .. y+48` vertically), so the near edge center is e.g. `(x, y+24)` for a left entry. (This was a router bug that is now fixed; the manual fix remains the fallback if you ever see it resurface, e.g. after a forced-port choice.)
+- **Bottom-entry arrowhead crossing the label.** When an arrow enters a node from below (target_port bottom, or a node sitting above its source), the engine stops the head at the icon's bottom edge (`y+48`) — but the node's label and italic sublabel are drawn *below* that, around `y+62` and `y+76`. The vertical line then runs straight through the text. The engine cannot avoid this on its own because label height isn't part of the icon box. Fix: in the SVG, change that arrow's final `L x,Y` so `Y` sits just under the lowest text line (sublabel baseline + ~10px). The arrowhead then lands cleanly beneath "Amazon Foo / subtitle" instead of spearing it. If there's no sublabel, stopping ~16px below the label line is enough.
+
+After editing SVG endpoints, re-rasterize with `rsvg-convert -w 2048 file.svg -o file.png` (do NOT re-run the JSON generator — that regenerates from scratch and discards the manual endpoint edits). The edited SVG/PNG pair is the deliverable.
+
 ### Post-Generation Verification (MANDATORY)
 After every diagram generation, **read the PNG file** and visually verify:
 1. All icons are fully inside their assigned containers
 2. No arrow lines overlap with container borders
 3. No labels are clipped at viewBox edges
 4. External icons (users, internet, on-premises) actually render (not blank)
+5. **Every arrowhead lands on the target icon's near edge** — not piercing through to the far side, and not running through the icon's label/sublabel text (see Arrowhead Endpoint Rules above)
 
 ---
 
@@ -491,7 +516,8 @@ After generating:
 - [ ] viewBox fits all elements with margin
 - [ ] **Arrow-icon collision** -- no arrow line crosses over any service icon (>= 10px clearance)
 - [ ] **SVG layer order** -- icons render ABOVE arrows (icons are topmost layer)
-- [ ] **Arrow edge alignment** -- all path M/L values match icon edge_center coordinates
+- [ ] **Arrowhead on near edge** -- each arrowhead lands on the target's source-facing edge, not pierced through to the far side
+- [ ] **No arrowhead through label** -- bottom-entering arrows stop beneath the icon's label/sublabel text, not through it
 - [ ] **Title bar clearance** -- no arrows cross container header bars
 - [ ] **Multi-arrow separation** -- arrows from same icon use different edge ports (no overlap)
 - [ ] **Callout spacing** -- number circles have >= 15px gap from text labels

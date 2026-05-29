@@ -79,8 +79,8 @@ Key placement rules:
     {"id": "apigw", "service": "api-gateway", "label": "API Gateway", "x": 1, "y": 2},
     {"id": "agentcore", "service": "bedrock-agentcore", "label": "AgentCore Runtime", "sublabel": "Strands + Memory", "x": 2, "y": 2, "container": "platform"},
     {"id": "mcp", "service": "lambda", "label": "MCP Gateway", "sublabel": "MCP Server", "x": 3, "y": 2, "container": "platform"},
-    {"id": "sys1", "service": "on-premises", "label": "Legacy System A", "sublabel": "On-Premises", "x": 4, "y": 1, "container": "onprem"},
-    {"id": "sys2", "service": "on-premises", "label": "Legacy System B", "sublabel": "On-Premises", "x": 4, "y": 3, "container": "onprem"}
+    {"id": "sys1", "service": "on-premises", "label": "External System A", "sublabel": "On-Premises", "x": 4, "y": 1, "container": "onprem"},
+    {"id": "sys2", "service": "on-premises", "label": "External System B", "sublabel": "On-Premises", "x": 4, "y": 3, "container": "onprem"}
   ],
   "connections": [
     {"source": "user", "target": "apigw", "label": "HTTPS", "style": "solid"},
