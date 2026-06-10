@@ -33,9 +33,10 @@ handle tasks that would otherwise exceed your remaining context budget.
 ## Kiro CLI Configuration
 
 ```yaml
-Binary: /Applications/Kiro CLI.app/Contents/MacOS/kiro-cli
+Binary: kiro-cli on PATH (e.g. /usr/bin/kiro-cli on Linux),
+        falling back to /Applications/Kiro CLI.app/Contents/MacOS/kiro-cli on macOS
 Mode: chat --no-interactive
-Default Model: claude-opus-4.7
+Default Model: claude-opus-4.8
 Default Agent: (kiro's built-in default agent)
 ```
 
@@ -59,7 +60,7 @@ bash <SKILL_DIR>/scripts/run_kiro.sh --timeout 600 "Analyze this large codebase.
 bash <SKILL_DIR>/scripts/run_kiro.sh --trust-all "Read and summarize all files in /path/to/docs/"
 
 # Specify a different model
-bash <SKILL_DIR>/scripts/run_kiro.sh --model claude-sonnet-4.5 "Quick summary of this file"
+bash <SKILL_DIR>/scripts/run_kiro.sh --model claude-sonnet-4.6 "Quick summary of this file"
 
 # Pipe file content as context
 cat /path/to/large-file.md | bash <SKILL_DIR>/scripts/run_kiro.sh "Summarize this document"
@@ -70,12 +71,21 @@ bash <SKILL_DIR>/scripts/run_kiro.sh --trust-all --timeout 600 "QA review of /pa
 
 ### Direct CLI Invocation (advanced)
 
-If the wrapper script is not suitable, call kiro-cli directly:
+If the wrapper script is not suitable, call kiro-cli directly. Use `kiro-cli`
+from PATH where available (Linux/Homebrew); on macOS GUI installs the binary
+lives inside the app bundle:
 
 ```bash
+# When kiro-cli is on PATH (Linux, Homebrew)
+kiro-cli chat \
+  --no-interactive \
+  --model claude-opus-4.8 \
+  "Your prompt here"
+
+# macOS app-bundle install (not on PATH)
 "/Applications/Kiro CLI.app/Contents/MacOS/kiro-cli" chat \
   --no-interactive \
-  --model claude-opus-4.7 \
+  --model claude-opus-4.8 \
   "Your prompt here"
 ```
 

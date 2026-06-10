@@ -4,8 +4,15 @@
 
 set -euo pipefail
 
-KIRO_BIN="/Applications/Kiro CLI.app/Contents/MacOS/kiro-cli"
-DEFAULT_MODEL="claude-opus-4.7"
+# Resolve the Kiro CLI binary across platforms:
+#   1. `kiro-cli` on PATH (Linux installs land in /usr/bin, Homebrew on macOS, etc.)
+#   2. macOS app bundle fallback for GUI installs that don't symlink onto PATH
+if command -v kiro-cli &>/dev/null; then
+    KIRO_BIN="$(command -v kiro-cli)"
+else
+    KIRO_BIN="/Applications/Kiro CLI.app/Contents/MacOS/kiro-cli"
+fi
+DEFAULT_MODEL="claude-opus-4.8"
 DEFAULT_TIMEOUT=300
 TRUST_ALL=false
 MODEL=""
@@ -18,13 +25,13 @@ Usage: run_kiro.sh [OPTIONS] "prompt"
 Options:
   --timeout SEC    Max seconds to wait (default: 300)
   --trust-all      Auto-approve all tool usage (-a flag)
-  --model MODEL    Override default model (default: claude-opus-4.7)
+  --model MODEL    Override default model (default: claude-opus-4.8)
   --help           Show this help
 
 Examples:
   run_kiro.sh "Summarize /path/to/file.md"
   run_kiro.sh --trust-all "Read and analyze /path/to/project/"
-  run_kiro.sh --timeout 600 --model claude-sonnet-4.5 "Quick task"
+  run_kiro.sh --timeout 600 --model claude-sonnet-4.6 "Quick task"
   cat file.txt | run_kiro.sh "Summarize the piped content"
 EOF
     exit 0
