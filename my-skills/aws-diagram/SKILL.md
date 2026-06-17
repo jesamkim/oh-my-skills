@@ -32,8 +32,12 @@ guaranteed orthogonal arrow routing, and standard AWS design system.
 python3 scripts/generate_diagram.py -i diagram.json -o output.svg --png
 
 # 3. Verify: read the PNG and visually inspect
-# 4. Optional: add PPTX
-python3 scripts/generate_diagram.py -i diagram.json -o output.svg --png --pptx output.pptx
+# 4. PPTX needed? Choose by deliverable type:
+#    - Image-on-a-slide (presentation-only): embed the PNG via python-pptx add_picture
+#    - EDITABLE shapes (customer will modify): use the native builder — read
+#      references/pptx-native-workflow.md and scripts/pptx_native_lib.py
+#    - generate_diagram.py --pptx exists but produces broken layouts on complex
+#      diagrams (CJK labels, 4+ containers) — avoid it for customer deliverables
 ```
 
 ---
@@ -51,8 +55,31 @@ Claude produces a JSON definition; the engine guarantees correct output.
 3. Create a JSON diagram definition (see Schema below)
 4. Run: python3 scripts/generate_diagram.py -i diagram.json -o output.svg --png
 5. QA: visually inspect the PNG output (MANDATORY)
-6. Optional: --pptx output.pptx for PowerPoint export
+6. PPTX deliverable: see "Native PPTX" path below — do NOT default to --pptx
 ```
+
+### Native PPTX: Editable PowerPoint Slides
+
+When the user needs an **editable** PPTX (they or the customer will move
+shapes, fix labels, adapt the diagram), the px->EMU exporter behind
+`--pptx` is unreliable for complex diagrams — field-verified failure
+(2026-06: 12 nodes / 5 containers / Korean labels) produced 20 visual
+defects: containers piercing icons, orphaned labels, arrows through text,
+CJK labels wrapped to 3 lines.
+
+Instead, write a small build script against
+`scripts/pptx_native_lib.py` (NativeSlideBuilder: container/line/
+arrow_label/node helpers with AWS design-system colors baked in), using
+explicit inch coordinates. Then render via LibreOffice and **QA with a
+subagent** — self-review of your own layout reliably misses defects.
+
+**Read `references/pptx-native-workflow.md` before starting** — it has the
+workflow, a script skeleton, and a layout-rule table where each rule maps
+to a real observed defect (node pitch >= 1.55in, container clearance,
+vertical arrows must clear label blocks, etc.).
+
+The common 2-slide deliverable: slide 1 = PNG embed (best-looking), slide
+2 = native shapes (editable), both from one build script.
 
 ### Fallback: Manual SVG
 
@@ -108,7 +135,8 @@ The Python engine consists of 7 modules with clear separation of concerns:
 | `layout_engine.py` | Grid-to-pixel coordinate computation, container bounding box calculation |
 | `orthogonal_router.py` | Arrow routing (L-shape, Z-shape), obstacle avoidance, label/callout placement |
 | `svg_renderer.py` | SVG assembly with inline icon symbols, container styling, arrow rendering |
-| `pptx_export.py` | Native PPTX shapes (editable containers, icons, labels, connectors) |
+| `pptx_export.py` | Automated PPTX export (px->EMU translation) — unreliable on complex/CJK diagrams, prefer pptx_native_lib.py |
+| `pptx_native_lib.py` | NativeSlideBuilder — hand-coordinate editable PPTX helpers (containers, arrows, labeled nodes, icon rasterizer) |
 | `pptx_connector.py` | OOXML connector injection for native PowerPoint arrows |
 | `icon_rasterizer.py` | SVG-to-PNG rasterization for PPTX icon embedding |
 
