@@ -17,7 +17,7 @@ description: |
 license: MIT License
 metadata:
   skill-author: Jesam Kim
-  version: 2.0.0
+  version: 2.1.0
 allowed-tools: [Bash, Read, Write, Glob, Grep]
 ---
 
@@ -57,12 +57,15 @@ Binary (macOS): /Applications/Kiro CLI.app/Contents/MacOS/kiro-cli
 Binary (Linux): kiro-cli on PATH (e.g. /usr/bin/kiro-cli)
 Binary override: KIRO_BIN=/custom/path bash run_kiro.sh "..."
 Mode: chat --no-interactive
-Default model: auto   # the CLI's own default: task-routed, 1.00x credits
+Default model (general delegation): auto   # CLI default: task-routed, 1.00x credits
+Default model (code review): first available of the non-Claude cross-family chain (see Mode 2)
 ```
 
-**Model choice matters (verified on kiro-cli 2.7.x).** The real CLI default is
-`auto` (1.00x credits, picks a model per task). The scripts follow that default.
-Pin a model with `--model` only when you need determinism or a specific tier:
+**Model choice matters (verified on kiro-cli 2.11.0).** For **general delegation**
+the CLI default is `auto` (1.00x credits, picks a model per task), and
+`run_kiro.sh` follows that default. For **code review**, `run_kiro_review.sh`
+defaults instead to a non-Claude cross-family model (see Mode 2). Pin a model
+with `--model` only when you need determinism or a specific tier:
 
 | Model | Credits | When to use |
 |-------|---------|-------------|
@@ -126,6 +129,33 @@ detects what to review from git state, feeds a skeptical reviewer prompt
 (`assets/prompts/adversarial-review.md`), and returns findings with `file:line`,
 severity, a concrete fix each, and a final `VERDICT: ship | no-ship`.
 
+### Cross-family default reviewer (why the default is non-Claude)
+
+In this skill's normal flow **Claude Code is the authoring model** — it wrote the
+code, then delegates the review here. If the review were also served by a Claude
+model (which `auto` frequently routes to), the same model family would be signing
+off on its own work. Following the "Adversarial Code Review" experiment
+(https://jesamkim.github.io/ai-tech-blog/posts/2026-07-06-adversarial-code-review/),
+whose real conclusion is a **habit** — *always cross-review with a different model
+family* — `run_kiro_review.sh` **defaults its reviewer to a non-Claude model.**
+
+- **Fallback chain** (first available wins): `qwen3-coder-480b → gpt-5.5 →
+  qwen3-coder-next → deepseek-3.2`. **The order carries no quality ranking** —
+  the blog found detection near-ceiling across families and that
+  coder-specialization was not a review virtue. Every entry is simply non-Claude;
+  order is by familiarity/availability, since the region's model list is dynamic.
+- **How it resolves:** the script probes kiro-cli once (an invalid-model call
+  that returns the region's model list on stderr, ~4.5 s, bounded by a 20 s
+  timeout) and picks the first chain entry present.
+- **Explicit override:** pass `--model <id>` to pin any model. If you pin a
+  Claude-family model, the script still runs but prints a *same-family
+  self-review* warning. `--model auto` is honored as-is (no chain resolution).
+- **Fallback:** if no non-Claude model is available (or the probe fails), the
+  script warns and falls back to `auto` — note `auto` may then route to Claude,
+  so cross-family review is not guaranteed in that case.
+- The startup log tags the outcome: `[cross-family]`, `[user-override]`,
+  `[user-auto]`, or `[auto-fallback]`.
+
 ```bash
 # Auto-detect scope from git (branch diff if ahead of base, else working tree):
 bash <SKILL_DIR>/scripts/run_kiro_review.sh
@@ -139,6 +169,8 @@ bash run_kiro_review.sh -- src/payments/ src/auth/handler.ts # explicit paths
 bash run_kiro_review.sh --focus "concurrency and the retry path"
 bash run_kiro_review.sh --json     # also emit a machine-readable JSON findings block
 bash run_kiro_review.sh --model claude-opus-4.8 --effort max   # deepest review
+# NOTE: --model claude-* triggers a same-family self-review warning (Claude reviewing
+# Claude's own code). Omit --model to get the non-Claude cross-family default instead.
 ```
 
 **Key properties (mirrors the codex review contract):**
@@ -200,8 +232,8 @@ call `/goal` directly. Instead:
   to the user when an interactive autonomous loop is genuinely what they want;
   it is outside what this delegation skill drives.
 
-Other 2.7.x capabilities the scripts expose where they help headless work:
-`--effort`, `--agent`, granular `--trust-tools`, and the `auto` model default.
+Other capabilities the scripts expose where they help headless work (present as of
+2.11.0): `--effort`, `--agent`, granular `--trust-tools`, and the `auto` model default.
 The KAS engine (`--v3` / `--agent-engine kas`) and `--mode spec|vibe` exist but
 are interactive/IDE-oriented and not used by this delegation skill.
 
