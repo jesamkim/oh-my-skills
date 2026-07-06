@@ -5,8 +5,8 @@
     "email": "jesamkim@gmail.com"
   },
   "metadata": {
-    "description": "Open collection of Claude Code skills: AWS architecture diagrams, AWS-themed presentations (myslide), SVG diagram generation, academic paper search, YouTube transcript extraction, AgentCore Browser automation via CDP, Bedrock Computer Use, Kiro CLI delegation, and professional README generation.",
-    "version": "1.0.0"
+    "description": "Open collection of Claude Code skills: AWS architecture diagrams, AWS-themed presentations (myslide), SVG diagram generation, academic paper search, YouTube transcript extraction, AgentCore Browser automation via CDP, SD3.5 Large image generation on Bedrock, Strands Agents SDK development, Kiro CLI delegation, and professional README generation.",
+    "version": "1.1.0"
   },
   "plugins": [
     {
@@ -55,12 +55,21 @@
       ]
     },
     {
-      "name": "computer-use",
-      "description": "Bedrock Computer Use GUI automation agent using Converse API. Captures screenshots, sends to Claude model, executes mouse/keyboard actions via pyautogui in an agentic loop. Supports click, type, scroll, drag, key press, and bash commands",
+      "name": "sd35l",
+      "description": "Stable Diffusion 3.5 Large image generation on Amazon Bedrock (us-west-2). Text-to-image and image-to-image (style transfer / variation) with seed-based reproducibility, strong prompt adherence, and photorealistic output. Triggers: generate image, stable diffusion, sd35, text to image, 이미지 생성, 그림 그려",
       "source": "./",
       "strict": false,
       "skills": [
-        "./my-skills/computer-use"
+        "./my-skills/sd35l"
+      ]
+    },
+    {
+      "name": "strandsagents",
+      "description": "Build autonomous AI agents with the AWS Strands Agents SDK using a live-documentation workflow. Checks the installed/latest SDK version and fetches official docs at run time before writing code. Covers @tool decorators, multi-agent patterns (agents-as-tools, swarm, graph), and Bedrock integration. Triggers: strands, strands agents, multi-agent, 스트랜즈",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/strandsagents"
       ]
     },
     {
