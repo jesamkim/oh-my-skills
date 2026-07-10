@@ -13,7 +13,7 @@ description: |
 license: MIT License
 metadata:
     skill-author: Jesam Kim
-    version: 1.0.0
+    version: 1.1.0
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, Task]
 ---
 
@@ -40,6 +40,8 @@ numbers, arXiv margin stamp, text inside figures, tables of symbols.
 ### NEVER DO
 - **NEVER** translate blocks marked `"translate": false` unless you have a
   clear reason to override (then flip the flag AND fill `translated_text`)
+- **NEVER** translate `figure-text` / `rotated` blocks (labels inside
+  diagrams) — overwriting them is what garbles figures; leave them original
 - **NEVER** modify `id`, `page`, `bbox`, `font_size`, or `bold` fields
 - **NEVER** translate: model/dataset/product names, technical acronyms,
   author names, citation markers `[12]`, inline math symbols, URLs
@@ -49,7 +51,8 @@ numbers, arXiv margin stamp, text inside figures, tables of symbols.
 - **ALWAYS** fill only the `translated_text` field
 - **ALWAYS** use academic written Korean (문어체: "~한다", "~이다")
 - **ALWAYS** keep `"그림 N:"` / `"표 N:"` prefixes for captions
-- **ALWAYS** run the verify step and the Vision QA before delivering
+- **ALWAYS** run the verify step with `--blocks` (figure-integrity diff) and
+  the Vision QA before delivering, and Read every `figdiff_*` crop pair
 
 ## Prerequisites
 
@@ -169,36 +172,82 @@ Safety behavior:
   a broken PDF is never presented as the final result. Shorten those
   translations in the JSON and re-run.
 
-### Rasterize fallback (capture-and-crop workaround)
-
-If Vision QA (Step 4) shows a page where redaction damaged the visuals
-(vector figures losing strokes, table rules disappearing), re-run with that
-page in rasterize mode — the page is rendered to a 200-dpi image as
-background, translated regions are covered with white patches, and Korean is
-overlaid on top. Text on such pages becomes non-selectable but visuals are
-pixel-perfect:
-
-```bash
-python ${SKILL_DIR}/scripts/apply_overlay.py "<paper.pdf>" "<stem>_blocks*.json" --rasterize-pages 4,7
-```
-
 ## Step 4 — Verify + Vision QA
 
 ```bash
 python ${SKILL_DIR}/scripts/verify_output.py "<paper.pdf>" "KO_<name>.pdf" \
-    "<stem>_apply_report.json" --render 0,1,5 --render-dir <workdir>/qa
+    "<stem>_apply_report.json" --blocks "<stem>_blocks*.json" \
+    --render 0,1,5 --render-dir <workdir>/qa
 ```
 
 Checks page count, failed insertions, hangul coverage, excessive shrink
-(< 0.6 scale). Then **Read the rendered PNGs** and visually confirm:
+(< 0.6 scale). **Always pass `--blocks`** — every paper has figures, so the
+**figure-integrity diff** is part of the standard QA, not an add-on. It
+renders every page of source and output, masks the regions where change is
+expected (translated prose blocks, rasterized pages, existing patches), and
+pixel-compares the rest. Any residual diff means the overlay touched
+something it should not have — typically labels inside a figure that were
+redacted or overwritten (this is exactly how garbled "Figure 1" text was
+caught on arXiv 2508.02292). The check is deterministic (each page is
+rendered once from its own document handle), so a clean result is
+trustworthy. Each finding is reported with its bbox, side-by-side
+`figdiff_*` crops, and a ready-to-run patch command.
+
+Then **Read the rendered PNGs** (including every `figdiff_*` crop pair) and
+visually confirm:
 - Korean text fits its box, no overlap with neighbors or figures
 - No leftover English fragments inside translated regions
-- Figures/tables/equations undamaged (if damaged -> rasterize fallback above)
-- No garbled or tofu characters
+- Figures/tables/equations undamaged, no garbled or tofu characters inside
+  figures (if damaged -> crop-patch fallback below)
 
-Fix issues by editing the affected block's JSON (e.g. shorten the
-translation) and re-running Step 3. Render 2-3 representative pages: page 0,
-the densest body page, and one caption/figure-heavy page.
+Fix prose issues by editing the affected block's JSON (e.g. shorten the
+translation, or null out a figure block's `translated_text`) and re-running
+Step 3. Render 2-3 representative pages: page 0, the densest body page, and
+one caption/figure-heavy page.
+
+### Crop-patch fallback (damaged figure regions)
+
+**Confirm before patching.** A figdiff finding is a *candidate*, not a
+verdict — the pixel diff can flag a legitimate change or a boundary artifact.
+Always Read the `figdiff_*_src.png` / `figdiff_*_out.png` pair first and
+judge whether the figure is actually damaged. Patch only regions you have
+visually confirmed as damaged; report ambiguous ones to the user rather than
+patching blind.
+
+When a figdiff crop shows real damage — a figure label wiped by redaction,
+Korean text sitting inside a diagram, lost strokes — paste the original
+pixels back over just that region. `verify_output.py` prints the exact
+command for each finding:
+
+```bash
+python ${SKILL_DIR}/scripts/patch_regions.py "<paper.pdf>" "KO_<name>.pdf" \
+    --region 4:160.4,86.3,386.0,98.8 --region 4:411.0,109.3,471.0,128.3
+```
+
+Each region is rendered from the SOURCE page at 300 dpi and inserted over
+the same rect in the output, so the figure area becomes a pixel-perfect
+image of the original (non-selectable, but visually intact). Prefer fixing
+the root cause first — a figure block that got translated should have its
+`translated_text` nulled and Step 3 re-run; patch only what redaction
+itself damaged. **Run patching last**: re-running apply_overlay.py
+regenerates the PDF and discards patches. After patching, re-run Step 4 —
+patched regions are auto-masked, so a clean result confirms the fix.
+
+If a diff is legitimate (e.g. a page you deliberately altered), exclude it
+with `--fig-skip-pages 4` instead of patching.
+
+### Rasterize fallback (whole-page)
+
+If damage is spread across a whole page (vector figure losing many strokes,
+table rules disappearing everywhere), patching region-by-region is not
+worth it — re-run Step 3 with that page in rasterize mode instead. The page
+is rendered to a 200-dpi image as background, translated regions are
+covered with white patches, and Korean is overlaid on top. Text on such
+pages becomes non-selectable but visuals are pixel-perfect:
+
+```bash
+python ${SKILL_DIR}/scripts/apply_overlay.py "<paper.pdf>" "<stem>_blocks*.json" --rasterize-pages 4,7
+```
 
 ## Translation Quality Guidelines
 

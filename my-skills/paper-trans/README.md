@@ -25,6 +25,15 @@ and equations intact, and produces `KO_<name>.pdf`.
    (capture-and-crop) when redaction would damage complex vector figures.
 5. **verify_output.py** — checks page count, failed insertions, hangul
    coverage, and excessive shrink; renders pages to PNG for Claude Vision QA.
+   With `--blocks` it also runs a figure-integrity pixel diff: expected-change
+   regions (translated prose, rasterized pages, patches) are masked and the
+   rest of each page is compared against the source — any residual diff
+   (e.g. garbled labels inside a figure) is reported with bbox, side-by-side
+   crops, and a ready-to-run patch command.
+6. **patch_regions.py** — crop-patch fallback: renders the damaged region
+   from the source page at 300 dpi and pastes it over the same rect in the
+   output, restoring figures pixel-perfectly (text under the patch becomes
+   non-selectable).
 
 ## Requirements
 
@@ -44,7 +53,11 @@ python scripts/extract_blocks.py work/2508.02292.pdf --split-pages 3 --translata
 # ... fill translated_text in the JSON files (Claude) ...
 python scripts/apply_overlay.py work/2508.02292.pdf "work/2508.02292_blocks*.json"
 python scripts/verify_output.py work/2508.02292.pdf work/KO_2508.02292.pdf \
-    work/2508.02292_apply_report.json --render 0,1 --render-dir work/qa
+    work/2508.02292_apply_report.json --blocks "work/2508.02292_blocks*.json" \
+    --render 0,1 --render-dir work/qa
+# if the figure diff reports damage, patch with the printed command, e.g.:
+# python scripts/patch_regions.py work/2508.02292.pdf work/KO_2508.02292.pdf \
+#     --region 4:160.4,86.3,386.0,98.8
 ```
 
 ## Scope

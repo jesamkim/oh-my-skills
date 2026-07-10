@@ -1,0 +1,34 @@
+{
+  "skill_name": "paper-trans",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "figure-integrity-arxiv-2508.02292",
+      "prompt": "이 논문 한글로 번역해줘: https://arxiv.org/pdf/2508.02292",
+      "expected_output": "KO_2508.02292.pdf — 30페이지 레이아웃 유지, 본문 한글화, Figure 1(page 4)의 다이어그램 라벨이 깨지지 않고 원본과 픽셀 동일하거나 크롭-패치로 복원됨. verify_output.py --blocks 가 PASS.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "output-pdf-exists-same-page-count",
+          "check": "KO_2508.02292.pdf exists and has exactly 30 pages (same as source)"
+        },
+        {
+          "name": "verify-passes-with-figure-diff",
+          "check": "verify_output.py with --blocks exits 0 (PASS or PASS with warnings); zero failed insertions; hangul ratio >= 0.05"
+        },
+        {
+          "name": "figure-integrity-clean",
+          "check": "figure-integrity diff reports 'clean' (or all findings resolved via patch_regions.py and a re-run reports clean) — no unresolved diff regions inside figures"
+        },
+        {
+          "name": "figure1-labels-undamaged",
+          "check": "200-dpi crop of the Figure 1 region (page 4) pixel-matches the original source render (0 diff pixels above tolerance), i.e. no garbled/Korean-overwritten labels inside the diagram"
+        },
+        {
+          "name": "translation-coverage",
+          "check": "every translate:true block outside figure regions has translated_text filled; untranslated list contains only translator-judged non-prose blocks"
+        }
+      ]
+    }
+  ]
+}
