@@ -1,0 +1,14 @@
+{
+  "name": "pptx-trans",
+  "description": "Format-preserving PPTX translation using run-level text replacement",
+  "version": "1.0.0",
+  "author": "Jesam Kim",
+  "license": "MIT License",
+  "skills": [
+    {
+      "name": "pptx-trans",
+      "description": "Format-preserving PPTX translation skill using run-level text replacement. Translates English PowerPoint presentations to Korean (or other languages) while preserving 100% of original formatting (font size, color, typeface, bold, italic). Uses python-pptx run.text replacement to keep Font objects intact. Supports both sequential and parallel (sub-agent) workflows for large decks.",
+      "path": "SKILL.md"
+    }
+  ]
+}

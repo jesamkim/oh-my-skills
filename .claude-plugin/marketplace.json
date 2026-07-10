@@ -5,8 +5,8 @@
     "email": "jesamkim@gmail.com"
   },
   "metadata": {
-    "description": "Open collection of Claude Code skills: AWS architecture diagrams, AWS-themed presentations (myslide), SVG diagram generation, academic paper search, YouTube transcript extraction, AgentCore Browser automation via CDP, SD3.5 Large image generation on Bedrock, Strands Agents SDK development, Kiro CLI delegation, and professional README generation.",
-    "version": "1.1.0"
+    "description": "Open collection of Claude Code skills: AWS architecture diagrams, AWS-themed presentations (myslide), SVG diagram generation, academic paper search, format-preserving PPTX and academic paper translation, YouTube transcript extraction, AgentCore Browser automation via CDP, SD3.5 Large image generation on Bedrock, Strands Agents SDK development, Kiro CLI delegation, and professional README generation.",
+    "version": "1.2.0"
   },
   "plugins": [
     {
@@ -16,6 +16,24 @@
       "strict": false,
       "skills": [
         "./my-skills/paper-finder"
+      ]
+    },
+    {
+      "name": "pptx-trans",
+      "description": "Format-preserving PPTX translation using run-level text replacement. Translates English PowerPoint presentations to Korean (or other languages) while keeping 100% of original formatting (font size, color, typeface, bold, italic) via python-pptx run.text replacement. Supports sequential and parallel (sub-agent) workflows for large decks. Triggers: translate pptx, PPTX 번역, translate slides, 번역해줘 pptx",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/pptx-trans"
+      ]
+    },
+    {
+      "name": "paper-trans",
+      "description": "Format-preserving academic paper PDF translation to Korean using an overlay method: original text blocks are redacted in place (figures, equations, line art preserved) and Korean is inserted into the same bbox, keeping page count and layout identical. Accepts local PDF paths or URLs (arxiv.org/abs auto-converts to /pdf). Papers over 10 pages use parallel subagent translation. Triggers: paper translate, translate paper, paper-trans, 논문 번역, arxiv 번역",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/paper-trans"
       ]
     },
     {
