@@ -30,8 +30,12 @@ fi
 MODEL=""                 # empty sentinel; resolved after arg parsing (see resolve_review_model)
 MODEL_EXPLICIT=false     # set true when the user passes --model (distinguishes it from the default)
 PROBE_TIMEOUT="${KIRO_PROBE_TIMEOUT:-20}"   # cap for the model-list probe
-# Cross-family reviewer chain (non-Claude). Order = familiarity/availability, NOT quality (see SKILL.md).
-CROSS_FAMILY_CHAIN=(qwen3-coder-480b gpt-5.5 qwen3-coder-next deepseek-3.2)
+# Reviewer chain (first available wins). gpt-5.6-sol leads (strongest non-Claude
+# frontier reviewer on kiro-cli 2.12+, keeps the review cross-family);
+# claude-fable-5 is a deliberate same-family exception ranked second for review
+# capability (the script prints a same-family note when the chain picks it);
+# the tail keeps the legacy non-Claude order (see SKILL.md).
+REVIEW_CHAIN=(gpt-5.6-sol claude-fable-5 qwen3-coder-480b gpt-5.5 qwen3-coder-next deepseek-3.2)
 EFFORT="high"            # reviews benefit from deeper reasoning
 SCOPE="auto"             # auto | working-tree | branch | paths
 BASE_REF="origin/main"   # used when SCOPE=branch
@@ -55,7 +59,9 @@ Scope (what gets reviewed):
   -- path ...           Explicit paths (implies --scope paths)
 
 Tuning:
-  --model MODEL         Model (default: auto). e.g. claude-opus-4.8 for hardest reviews
+  --model MODEL         Pin a model. Default: reviewer chain, first available of
+                        gpt-5.6-sol > claude-fable-5 > qwen3-coder-480b > gpt-5.5
+                        > qwen3-coder-next > deepseek-3.2 (falls back to auto)
   --effort LEVEL        low|medium|high|xhigh|max (default: high)
   --focus "TEXT"        Extra focus area, e.g. "concurrency and the retry path"
   --json                Also emit a machine-readable JSON findings block
@@ -162,13 +168,20 @@ resolve_review_model() {
     fi
     local avail m
     avail="$(kiro_available_models)" || avail=""
-    for m in "${CROSS_FAMILY_CHAIN[@]}"; do
+    for m in "${REVIEW_CHAIN[@]}"; do
         if printf '%s\n' "$avail" | grep -qxF "$m"; then
-            MODEL="$m"; RESOLVE_TAG="cross-family"; return 0
+            MODEL="$m"
+            if [[ "$m" == claude-* ]]; then
+                RESOLVE_TAG="chain-same-family"
+                echo "Note: chain resolved to '$m' (Claude family) — a deliberate capability-ranked exception, but the authoring model is likely also Claude, so this run is a same-family review." >&2
+            else
+                RESOLVE_TAG="cross-family"
+            fi
+            return 0
         fi
     done
     MODEL="auto"; RESOLVE_TAG="auto-fallback"
-    echo "Warning: no non-Claude model available to resolve (probe empty or no chain match); falling back to 'auto'. NOTE: auto may route to a Claude model, so cross-family review is NOT guaranteed for this run." >&2
+    echo "Warning: no chain model available to resolve (probe empty or no chain match); falling back to 'auto'. NOTE: auto may route to a Claude model, so cross-family review is NOT guaranteed for this run." >&2
     return 0
 }
 

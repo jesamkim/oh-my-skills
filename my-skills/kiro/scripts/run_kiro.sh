@@ -5,7 +5,7 @@
 # the OSC "Response complete" marker, and the leading "> " prefix), enforces a
 # timeout when one is available, and returns clean text on stdout.
 #
-# Verified against kiro-cli 2.11.0 (2026-07):
+# Verified against kiro-cli 2.12.1 (2026-07):
 #   - Default model is `auto` (1.00x credits, task-routed). We pass `auto` so
 #     the skill follows the CLI's own default instead of pinning a pricey model.
 #   - Chat answers always print as styled terminal text on STDOUT even when
