@@ -1,9 +1,9 @@
 # HTML Slide — Keynote-Grade HTML Presentation Generator
 
 Build presentation decks as a **single self-contained HTML file** — no build
-step, no framework, no CDN-critical dependency. Open it in any browser, present
-with the arrow keys, and export to PDF with `Ctrl+P`. The output is designed to
-look like it came from a keynote design studio, not a Bootstrap template.
+step, no framework, no CDN-critical dependency. Open it in any browser and
+present with the arrow keys. The output is designed to look like it came from a
+keynote design studio, not a Bootstrap template.
 
 Every rule in this skill traces back to killing the two chronic defects of
 naive AI-generated HTML slides:
@@ -43,10 +43,9 @@ naive AI-generated HTML slides:
   Apple-style **pinned storytelling** (`:has()`-driven), exploded view, and
   **chart draw-on** (bars grow / lines draw / arcs sweep). Pick 2-3 signature
   effects per deck and reuse them
-- **Print-safe & accessible**: `Ctrl+P` gives one slide per landscape page with
-  effects force-completed; `prefers-reduced-motion` kills animation globally
-  while every effect settles to its real end-state, so print and reduced-motion
-  always show finished content (charts included)
+- **Accessible & no-JS-safe**: `prefers-reduced-motion` kills animation globally
+  while every effect settles to its real end-state, so a deck with motion
+  disabled (or JS off) still shows finished content, charts included
 - **Built-in navigation**: keyboard (←/→/Space/Home/End), touch swipe,
   click-to-advance, `data-step` fragment builds, URL hash routing (`#5`),
   progress bar, `f` fullscreen
@@ -122,15 +121,15 @@ html-slide/
 ## How It Works
 
 1. **Engine skeleton** (`references/engine.md`) provides the fixed-stage
-   scaling, navigation, step builds, hash routing, progress UI, and
-   print-to-PDF machinery. It is copied verbatim — only theme tokens, slide
-   `<section>` markup, and effect classes are written on top.
+   scaling, navigation, step builds, hash routing, and progress UI. It is
+   copied verbatim — only theme tokens, slide `<section>` markup, and effect
+   classes are written on top.
 2. **Theme tokens** are a single `:root` CSS variable block, customized per
    topic.
 3. **Slides** are `<section class="slide" id="sN">` blocks; edits locate a block
    by id or heading and change only that block.
 4. **QA** runs against the checklist in `SKILL.md` (text overflow, body ≥ 30px,
-   contrast, Mix Rule, Surface-variety, keyboard nav, print, Korean line breaks
+   contrast, Mix Rule, Surface-variety, keyboard nav, Korean line breaks
    and 존댓말 tone, single-file size < 2MB, branding correctness).
 
 ## Dependencies
