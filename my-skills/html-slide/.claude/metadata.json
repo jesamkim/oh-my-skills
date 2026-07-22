@@ -1,0 +1,14 @@
+{
+  "name": "html-slide",
+  "description": "Create stunning, self-contained HTML slide decks (single .html file, zero dependencies) with keynote-grade typography, preset design themes, and Apple.com-style visual effects. Fixed 1920x1080 stage auto-scaled to any viewport fixes the tiny-text and shrink-wrapped-box defects of naive AI-generated HTML slides. Three AWS branding modes: customer-session (AWS deck cover + branded footer + Amazon Ember/Nanum Gothic fonts), logo-only, none.",
+  "version": "1.4.0",
+  "author": "jesamkim",
+  "license": "MIT License",
+  "skills": [
+    {
+      "name": "html-slide",
+      "description": "Keynote-grade HTML presentation generator: single self-contained file, fixed 1920x1080 stage with transform-scale fit, design-px typography contract (body 36-48px, headings 64-80px, hero stats 280px+), 5 preset themes with mandatory per-topic variation, 18-layout catalog (incl. card-free and chart layouts) with Mix Rule + Surface-variety rule, effects library incl. pinned storytelling and chart draw-on. Trigger on: html slide, html 슬라이드, web slides, 웹 슬라이드, html presentation, 브라우저 슬라이드, 애니메이션 슬라이드, 임팩트 있는 슬라이드",
+      "path": "SKILL.md"
+    }
+  ]
+}

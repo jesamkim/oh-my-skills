@@ -1,0 +1,88 @@
+{
+  "skill_name": "html-slide",
+  "notes": "Five workflows under test. (1) Impact keynote deck — dark theme, effects, Korean (id 1). (2) Tech talk with code + pinned storytelling centerpiece (id 2). (3) Light/editorial variation proving preset variation + typography contract on a non-dark theme (id 3). (4) AWS logo branding, logo-only mode — explicit logo request must embed the correct theme variant as base64, margin-aligned (id 4). (5) customer-session mode — AWS-deck cover (logo top-left + title + presenter block + copyright) and branded footer (small logo + plain copyright, no 'Confidential') on every non-cover slide, base64 URI defined exactly once (id 5). Baselines run without the skill to measure the two chronic defects: small default-size text and shrink-wrapped boxes with dead space. Unattended runs must NOT ask branding/presenter questions — ids 1-3 expect no logo, ids 4-5 pick the mode in the prompt.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Amazon Bedrock AgentCore 출시 발표용 HTML 슬라이드 8장 만들어줘. 어두운 키노트 느낌으로, 시각적으로 임팩트 있게. 애니메이션 효과도 넣고. 한국어로. 브라우저에서 화살표 키로 넘기면서 발표할 거야. 파일 하나로 만들어줘.",
+      "expected_output": "단일 self-contained HTML 파일, 8개 슬라이드. 1920x1080 고정 스테이지 + scale 핏. 본문 30px 이상, 헤딩 64px 이상. 다크 키노트 테마(프리셋 변형). 시그니처 효과 2-3개 일관 적용(blur-reveal, staggered rise, count-up 등). 키보드 내비게이션 + 프로그레스 바 + 해시 라우팅 동작. word-break: keep-all 적용. 레이아웃 3연속 반복 없음.",
+      "files": [],
+      "assertions": [
+        "Single self-contained .html file (no required sibling assets, no JS library <script src> except optional font CSS link)",
+        "Exactly 8 slide sections",
+        "Fixed 1920x1080 stage scaled via transform: scale(), not responsive reflow",
+        "Body text >= 30px design-px; headings >= 60px; no browser-default 16px body",
+        "ArrowRight/ArrowLeft navigation + progress indicator or counter",
+        "2-3 signature effects reused consistently (not zero, not per-slide chaos)",
+        "word-break: keep-all on Korean text containers",
+        "No layout repeated 3+ times in a row",
+        "Dark theme, <= 5 colors, no purple-gradient-on-white template look"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "엔지니어 대상 'Strands Agents로 멀티 에이전트 구축하기' 테크톡 HTML 슬라이드 6장. 코드 예제 슬라이드 하나 필요하고, 아키텍처가 단계별로 하이라이트되는 슬라이드 하나 있으면 좋겠어. 스페이스바 누를 때마다 단계가 진행되는 식으로.",
+      "expected_output": "단일 HTML 파일, 6장. 코드 슬라이드: 코드 28px 이상 모노스페이스, 14줄 이하, 우측 주석 카드. 핀드 스토리텔링 슬라이드: data-step + :has() 패턴으로 키 입력마다 다이어그램 부분이 하이라이트. 스텝이 슬라이드 넘김보다 먼저 소진됨(PowerPoint 클릭 모델). 인쇄 시 모든 스텝 내용 표시.",
+      "files": [],
+      "assertions": [
+        "Single self-contained .html with exactly 6 slides",
+        "Space reveals in-slide steps BEFORE advancing slides (click model)",
+        "Architecture slide: diagram parts highlight per step, not just text",
+        "Code >= 26px monospace, <= ~15 lines, with side annotations",
+        "Body >= 30px, headings >= 60px",
+        "All step content visible when printed / JS disabled",
+        "Fixed 16:9 stage with transform scale fit"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "우리 팀 2026 상반기 회고를 경영진에게 공유할 HTML 슬라이드 7장을 만들어줘. 차분하고 고급스러운 에디토리얼/매거진 톤으로, 밝은 배경. 큰 숫자 몇 개 (배포 503건, 비용 -34%, NPS 72) 강조해줘.",
+      "expected_output": "단일 HTML 파일, 7장. 밝은 에디토리얼 테마(Paper Editorial 계열 변형 — 세리프 디스플레이 + 산세리프 본문, 그라디언트 없음). Hero Stat 레이아웃으로 큰 숫자 강조 (280px 이상, count-up 허용). 본문 대비 7:1 이상. 다크 테마 흔적 없음. 슬라이드 공간 60-80% 활용, 빈 공간에 떠 있는 작은 박스 없음.",
+      "files": [],
+      "assertions": [
+        "Single self-contained .html with exactly 7 slides",
+        "Light editorial theme: paper bg, serif/editorial display, no neon gradients",
+        "Stats 503 / -34% / 72 at display scale (>= 200px), not inline body numbers",
+        "Body >= 30px; body contrast >= 7:1",
+        "Content covers 60-80% of stage; no shrink-wrapped boxes in dead space",
+        ">= 3 distinct layouts, no 3-in-a-row repeats",
+        "word-break keep-all; no mid-word breaks in headings",
+        "Fixed 16:9 stage + keyboard navigation"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "AWS Summit 고객 세션용 'Amazon Bedrock 보안 아키텍처' HTML 슬라이드 4장 만들어줘. 다크 테마로, AWS 로고 넣어줘. 한국어로.",
+      "expected_output": "단일 HTML 파일, 4장, 다크 테마. AWS 로고가 base64 data URI로 인라인 임베드됨(외부 파일 참조 없음). 다크 테마이므로 white 로고 변형 사용. 타이틀 슬라이드 좌상단, 페이지 마진(96-120px)에 정렬, 폭 150-190px, 종횡비 유지. 콘텐츠 밴드 안에 로고 없음. 파일 크기 2MB 미만.",
+      "files": [],
+      "assertions": [
+        "Single self-contained .html with exactly 4 slides",
+        "AWS logo embedded as base64 data URI (no external image request)",
+        "White logo variant used (dark theme) — logo pixels are light, not dark",
+        "Logo on title slide top-left, aligned to page margin, width 150-190px",
+        "Aspect ratio preserved (~5:3, width-only sizing, no stretch/recolor/glow)",
+        "No logo inside the content band of content slides (footer level only, if present)",
+        "File size < 2MB",
+        "Body >= 30px, fixed 1920x1080 stage, keyboard navigation"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "고객 대상 AWS 세션용 'Amazon Bedrock AgentCore 소개' HTML 슬라이드 6장 만들어줘. 정식 AWS 고객 세션 덱 형식으로 — 표지는 AWS 덱 구조로 하고, 나머지 슬라이드에도 AWS 푸터 넣어줘. 발표자는 Jesam Kim, Solutions Architect. 다크 테마, 한국어로.",
+      "expected_output": "단일 HTML 파일, 6장, 다크 테마. 표지: AWS 로고 좌상단(150-190px, 마진 정렬) + 덱 타이틀 + 발표자 블록(Jesam Kim 굵게 / Solutions Architect muted) + 하단 copyright 라인. 표지를 제외한 5장 전부에 .aws-footer(작은 로고 ~64px + '© 2026, Amazon Web Services, Inc. or its affiliates. All rights reserved.'). 'Confidential' 문구 없음. base64 로고 URI는 CSS 변수로 파일에 정확히 1회만 등장. white 로고 변형(다크 테마). 폰트: Amazon Ember(@font-face, 번들 woff2 base64 임베드 300/400/700 — awsstatic 원격 URL은 CORS 차단이라 금지) + Nanum Gothic(Google Fonts), font-weight 700 초과 없음. 페이지 번호는 엔진 counter만(중복 없음). 파일 2MB 미만.",
+      "files": [],
+      "assertions": [
+        "Single self-contained .html with exactly 6 slides",
+        "Cover: AWS logo top-left (width 150-190px, margin-aligned), deck title, presenter block 'Jesam Kim' + 'Solutions Architect', copyright line bottom-left",
+        "Every non-cover slide has the AWS footer: small logo + copyright text",
+        "Copyright reads '© <year>, Amazon Web Services, Inc. or its affiliates. All rights reserved.' with NO 'Confidential' wording",
+        "Base64 logo data URI appears exactly once in the file (CSS custom property), not repeated per slide",
+        "White logo variant (dark theme), aspect ratio ~5:3 preserved",
+        "Fonts: Amazon Ember @font-face embedded as data:font/woff2 base64 (NOT remote awsstatic URLs — CORS-blocked) + Nanum Gothic Google Fonts link, with system fallback stack; no font-weight above 700",
+        "Footer text >= 20px; no second page number besides the engine counter",
+        "File size < 2MB",
+        "Body >= 30px, fixed 1920x1080 stage, keyboard navigation"
+      ]
+    }
+  ]
+}

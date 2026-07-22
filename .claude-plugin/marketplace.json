@@ -5,8 +5,8 @@
     "email": "jesamkim@gmail.com"
   },
   "metadata": {
-    "description": "Open collection of Claude Code skills: AWS architecture diagrams, AWS-themed presentations (myslide), SVG diagram generation, academic paper search, format-preserving PPTX and academic paper translation, YouTube transcript extraction, AgentCore Browser automation via CDP, SD3.5 Large image generation on Bedrock, Strands Agents SDK development, Kiro CLI delegation, and professional README generation.",
-    "version": "1.2.0"
+    "description": "Open collection of Claude Code skills: AWS architecture diagrams, AWS-themed presentations (myslide), keynote-grade HTML slide decks (html-slide), SVG diagram generation, academic paper search, format-preserving PPTX and academic paper translation, YouTube transcript extraction, AgentCore Browser automation via CDP, SD3.5 Large image generation on Bedrock, Strands Agents SDK development, Kiro CLI delegation, and professional README generation.",
+    "version": "1.3.0"
   },
   "plugins": [
     {
@@ -61,6 +61,15 @@
       "strict": false,
       "skills": [
         "./my-skills/myslide"
+      ]
+    },
+    {
+      "name": "html-slide",
+      "description": "Create stunning, self-contained HTML slide decks (single .html file, zero dependencies) with keynote-grade typography, five preset design themes (Midnight Keynote, Aurora Tech, Paper Editorial, Swiss Minimal, Terminal Mono), and Apple.com-style product-reveal effects. Fixed 1920x1080 stage auto-scaled to any viewport, keyboard/touch navigation, step-by-step builds, and print-to-PDF support. For HTML/web slide deliverables (PPTX is myslide). Triggers: html slide, html 슬라이드, web slides, 웹 슬라이드, html presentation, 브라우저 슬라이드, keynote in browser",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./my-skills/html-slide"
       ]
     },
     {
