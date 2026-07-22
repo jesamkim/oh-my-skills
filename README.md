@@ -8,7 +8,7 @@ AWS 중심 워크플로, 시각 자료 생성, 에이전트 자동화를 위한 
 |------|------|
 | [`aws-diagram`](my-skills/aws-diagram/) | 공식 AWS Architecture Icons을 이용해 AWS 아키텍처 다이어그램을 SVG / PPTX로 생성합니다. |
 | [`myslide`](my-skills/myslide/) | AWS 테마 PowerPoint 덱을 생성합니다 (다크 reInvent 테마 / 라이트 L100 테마). SVG 다이어그램 및 브랜드 컬러 내장. |
-| [`html-slide`](my-skills/html-slide/) | 의존성 없는 단일 .html 파일로 키노트급 슬라이드 덱을 생성합니다. 5가지 프리셋 테마, Apple 스타일 리빌 효과, print-to-PDF 지원. 발표자 이름/직함은 생성 시 질문으로 입력받습니다. |
+| [`html-slide`](my-skills/html-slide/) | 의존성 없는 단일 .html 파일로 키노트급 슬라이드 덱을 생성합니다. 5가지 프리셋 테마, Apple 스타일 리빌 효과, 브라우저에서 화살표로 발표. 발표자 이름/직함은 생성 시 질문으로 입력받습니다. |
 | [`svg-diagram`](my-skills/svg-diagram/) | 겹침 방지 규칙이 적용된 픽셀 단위 정밀 SVG 다이어그램, 배너, 히어로 그래픽을 생성합니다. |
 | [`readme`](my-skills/readme/) | 커뮤니티 모범 사례를 따르는 세련된 README.md 파일을 자동 생성합니다. |
 | [`paper-finder`](my-skills/paper-finder/) | Semantic Scholar, OpenAlex, ArXiv API 기반 논문 검색. BibTeX 내보내기 지원. |
