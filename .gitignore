@@ -16,3 +16,6 @@ node_modules/
 # Skill workspaces (local-only outputs)
 my-skills/myslide-workspace/
 svg-diagram-workspace/
+
+# Local-only design specs (superpowers brainstorming output)
+docs/
