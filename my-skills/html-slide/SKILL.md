@@ -7,8 +7,8 @@ description: |
   techniques. Fixes the two chronic defects of naive AI-generated HTML
   slides: tiny text and boxy template sameness. Every deck renders on a
   fixed 1920x1080 stage auto-scaled to any viewport, with keyboard/touch
-  navigation, step-by-step builds, progress bar, URL hash routing, and
-  print-to-PDF support built in. Five preset themes (Midnight Keynote,
+  navigation, step-by-step builds, progress bar, and URL hash routing
+  built in. Five preset themes (Midnight Keynote,
   Aurora Tech, Paper Editorial, Swiss Minimal, Terminal Mono) that get
   customized per topic — never used verbatim. Use this skill whenever the
   user wants a presentation as HTML/web slides, a browser-viewable deck,
@@ -28,8 +28,8 @@ allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, Agent, AskUserQuestion]
 # HTML Slide — Keynote-Grade HTML Presentation Generator
 
 Build presentation decks as a **single self-contained HTML file**: no build
-step, no framework, no CDN-critical dependency. Open in any browser,
-present with arrow keys, export to PDF with Ctrl+P. The output should look
+step, no framework, no CDN-critical dependency. Open in any browser and
+present with arrow keys. The output should look
 like it was designed by a keynote design studio, not assembled from a
 Bootstrap template.
 
@@ -258,8 +258,9 @@ Restraint contract:
   600-900ms, steps 300-500ms
 - Every effect must respect `prefers-reduced-motion` (engine handles the
   global kill-switch; don't bypass it)
-- Effects never gate content: a deck with JS disabled must still show all
-  content when printed
+- Effects never gate content: with JS disabled or motion reduced, the deck
+  must still show all content (animate FROM an offset TO the natural state,
+  never the reverse)
 
 ## AWS Branding (ask before building)
 
@@ -480,8 +481,12 @@ The skeleton in [references/engine.md](references/engine.md) provides:
 - `data-step` fragment builds within a slide
 - URL hash routing (`#5` = slide 5, shareable/resumable)
 - Progress bar + `current/total` counter, `f` fullscreen
-- Print stylesheet: Ctrl+P → one slide per landscape page, effects
-  force-completed, PDF-ready without any external tool
+- Print stylesheet (fallback only): a `@media print` block exists so a deck
+  degrades gracefully when printed, but browser print is unreliable —
+  backgrounds, gradients, and effect end-states often drop or mangle, so it
+  does NOT reproduce the deck faithfully. Don't advertise Ctrl+P as a delivery
+  path; for a shareable static copy, screenshot each slide with headless
+  Chromium at 1920×1080 instead
 - `prefers-reduced-motion` global handling
 
 Copy the skeleton, then write only: theme tokens (CSS variables), slide
@@ -536,7 +541,9 @@ Layout/served checks — open the file (agent-browser or playwright,
    (no 3+ card-`.cell` layouts in a row — break with a card-free or chart layout)
 5. Keyboard nav works end-to-end; hash routing lands on the right slide
 6. Steps (`data-step`) reveal in reading order
-7. Print preview: every slide on its own page, no effect-hidden content
+7. No content is gated behind an effect: with animation disabled
+   (`prefers-reduced-motion`) every slide still shows its full content, none
+   trapped in an un-run animation's start-state
 8. Korean: no mid-word line breaks (keep-all applied); tone is 존댓말
    throughout — no plain-form (반말) sentence endings in titles, headings,
    body, or captions unless the user explicitly asked for plain form

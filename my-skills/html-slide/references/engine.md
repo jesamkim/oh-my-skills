@@ -243,14 +243,16 @@ current/total page — without granting the iframe `allow-same-origin`, since
 `postMessage` crosses the sandbox boundary. It is a no-op at top level
 (`window.parent === window`), so a standalone deck is unaffected.
 
-### Print / PDF
-Ctrl+P with the built-in stylesheet gives one slide per 1920×1080 page,
-all steps force-revealed, chrome hidden. Tell the user: destination
-"Save as PDF", margins "None", background graphics ON. For batch/CI
-export, headless Chrome works:
-`chrome --headless --print-to-pdf=deck.pdf --no-pdf-header-footer deck.html`
-(playwright's `page.pdf()` equally fine). Never rasterize slides to
-images for PDF.
+### Print / PDF (fallback, not a delivery path)
+A `@media print` block is included so the deck degrades gracefully — one
+slide per 1920×1080 page, all steps force-revealed, chrome hidden. **But
+browser print (Ctrl+P → Save as PDF) is unreliable**: backgrounds,
+gradients, `backdrop-filter`, and effect end-states routinely drop or
+mangle across browsers/print engines, so the PDF rarely matches the deck.
+Don't recommend it as the way to hand off a deck. If a user needs a static
+copy, screenshot each slide with headless Chromium at 1920×1080 and
+assemble those instead — never rely on print fidelity, and never rasterize
+via the print pipeline.
 
 ### Self-containment rules
 - Only allowed external request: the font CDN `<link>` (with full system
